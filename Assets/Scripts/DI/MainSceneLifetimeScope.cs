@@ -1,6 +1,7 @@
 ﻿using BeaverBlocks.Configs;
 using BeaverBlocks.Core.Cells;
 using BeaverBlocks.Core.Game;
+using BeaverBlocks.Core.Game.BlockPlace;
 using BeaverBlocks.DI.Factories;
 using BeaverBlocks.UI;
 using UnityEngine;
@@ -20,8 +21,10 @@ namespace BeaverBlocks.DI
             builder.Register<VContainerFactory>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterInstance(_configsService).As<IConfigsService>();
             builder.RegisterInstance(_panelService).As<IPanelService>();
-            builder.RegisterEntryPoint<GameController>(Lifetime.Scoped).AsSelf();
             builder.Register<CellsManager>(Lifetime.Singleton).AsSelf();
+            builder.Register<BlockPlaceManager>(Lifetime.Singleton).AsSelf();
+            
+            builder.RegisterEntryPoint<GameController>(Lifetime.Scoped).AsSelf();
         }
     }
 }

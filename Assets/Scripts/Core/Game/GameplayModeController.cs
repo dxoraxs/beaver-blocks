@@ -1,6 +1,7 @@
 ﻿using BeaverBlocks.Configs;
 using BeaverBlocks.Configs.Data;
 using BeaverBlocks.Core.Cells;
+using BeaverBlocks.Core.Game.BlockPlace;
 using BeaverBlocks.DI.Factories;
 using BeaverBlocks.UI;
 using BeaverBlocks.UI.Views.Game;
@@ -14,16 +15,18 @@ namespace BeaverBlocks.Core.Game
         private readonly IConfigsService _configsService;
         private readonly IPanelService _panelService;
         private readonly CellsManager _cellsManager;
+        private readonly BlockPlaceManager _blockPlaceManager;
 
         private GameView GameView => _panelService.Get<GameView>();
         
         [Preserve]
-        public GameplayModeController(IConfigsService configsService, IPanelService panelService, IIocFactory iocFactory, CellsManager cellsManager)
+        public GameplayModeController(IConfigsService configsService, IPanelService panelService, IIocFactory iocFactory, CellsManager cellsManager, BlockPlaceManager blockPlaceManager)
         {
             _configsService = configsService;
             _panelService = panelService;
             _iocFactory = iocFactory;
             _cellsManager = cellsManager;
+            _blockPlaceManager = blockPlaceManager;
 
             Initialize();
         }
@@ -31,6 +34,10 @@ namespace BeaverBlocks.Core.Game
         private void Initialize()
         {
             InitializeCells();
+            InitializeBlockPlaces();
+            
+            GameView.Initialize(_iocFactory.Create<GamePresenter>());
+            GameView.SetEnabled(true);
         }
 
         private void InitializeCells()
@@ -38,9 +45,13 @@ namespace BeaverBlocks.Core.Game
             var cellsInstaller = new CellsInstaller(_configsService.Get<GameSettings>().GridSize);
             cellsInstaller.Initialize();
             _cellsManager.SetCells(cellsInstaller.CellPresenters);
-            
-            GameView.Initialize(_iocFactory.Create<GamePresenter>());
-            GameView.SetEnabled(true);
+        }
+
+        private void InitializeBlockPlaces()
+        {
+            var blockPlaceInstaller = new BlockPlaceInstaller(_configsService.Get<GameSettings>().CountBottomPlace);
+            blockPlaceInstaller.Initialize();
+            _blockPlaceManager.SetBlockPlaces(blockPlaceInstaller.BlockPlacePresenters);
         }
 
         private void StartLevel()

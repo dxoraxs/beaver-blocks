@@ -5,8 +5,8 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
 {
     public interface IGridCellsPresenter
     {
-        public CellView GetCellViewPrefab { get; }
-        public uint SizeGrid { get; }
-        public IEnumerable<ICellPresenter> GetCellPresenters { get; }
+        CellView GetCellViewPrefab { get; }
+        uint SizeGrid { get; }
+        IEnumerable<ICellPresenter> GetCellPresenters { get; }
     }
 }

@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: prefabs_config
   m_EditorClassIdentifier: 
   <CellView>k__BackingField: {fileID: 5288945699306419645, guid: a2079074952626841b0338a6eb8f303b, type: 3}
+  <BlockPlaceView>k__BackingField: {fileID: 8950917392719119375, guid: dee86138421bf67418f4cbef194fcc56, type: 3}

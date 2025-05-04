@@ -1,4 +1,5 @@
 ﻿using BeaverBlocks.Core.Cells;
+using BeaverBlocks.UI.Views.Game.BlockPlace;
 using BeaverBlocks.UI.Views.Game.Cells;
 using UnityEngine;
 
@@ -9,5 +10,6 @@ namespace BeaverBlocks.Configs.Data
     public class PrefabsConfig : ScriptableObject
     {
         [field: SerializeField] public CellView CellView { get; private set; }
+        [field: SerializeField] public BlockPlaceView BlockPlaceView { get; private set; }
     }
 }
