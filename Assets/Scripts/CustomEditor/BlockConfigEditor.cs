@@ -33,9 +33,9 @@ public class BlockConfigEditor : Editor
         var gridRect =
             GUILayoutUtility.GetRect(_gridSize * (_cellSize + _padding), _gridSize * (_cellSize + _padding));
 
-        for (var y = 0; y < _gridSize; y++)
+        for (var x = 0; x < _gridSize; x++)
         {
-            for (var x = 0; x < _gridSize; x++)
+            for (var y = 0; y < _gridSize; y++)
             {
                 Vector2Int cell = new(x, y);
 

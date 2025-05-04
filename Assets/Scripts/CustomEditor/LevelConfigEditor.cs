@@ -14,7 +14,7 @@ public class LevelConfigEditor : Editor
     private Dictionary<Vector2Int, int> placedCells = new();
 
     private int selectedGroupIndex = 0;
-    private bool editMode = true;
+    private bool editMode = false;
 
     private void OnEnable()
     {
@@ -47,9 +47,9 @@ public class LevelConfigEditor : Editor
         var padding = 5f;
         var gridRect = GUILayoutUtility.GetRect(gridSize * (cellSize + padding), gridSize * (cellSize + padding));
 
-        for (var y = 0; y < gridSize; y++)
+        for (var x = 0; x < gridSize; x++)
         {
-            for (var x = 0; x < gridSize; x++)
+            for (var y = 0; y < gridSize; y++)
             {
                 Vector2Int cell = new(x, y);
                 Rect cellRect = new(

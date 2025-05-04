@@ -15,17 +15,17 @@ MonoBehaviour:
   <Id>k__BackingField: 
   <InitialBlocks>k__BackingField: []
   <PrePlacedCells>k__BackingField:
-  - <Position>k__BackingField: {x: 5, y: 7}
+  - <Position>k__BackingField: {x: 3, y: 7}
     <GroupIndex>k__BackingField: 0
   - <Position>k__BackingField: {x: 4, y: 7}
     <GroupIndex>k__BackingField: 0
-  - <Position>k__BackingField: {x: 3, y: 7}
+  - <Position>k__BackingField: {x: 5, y: 7}
     <GroupIndex>k__BackingField: 0
-  - <Position>k__BackingField: {x: 5, y: 6}
+  - <Position>k__BackingField: {x: 3, y: 6}
     <GroupIndex>k__BackingField: 1
   - <Position>k__BackingField: {x: 4, y: 6}
     <GroupIndex>k__BackingField: 1
-  - <Position>k__BackingField: {x: 3, y: 6}
+  - <Position>k__BackingField: {x: 5, y: 6}
     <GroupIndex>k__BackingField: 1
   - <Position>k__BackingField: {x: 3, y: 5}
     <GroupIndex>k__BackingField: 2

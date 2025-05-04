@@ -16,3 +16,4 @@ MonoBehaviour:
   _blocksDatabase: {fileID: 11400000, guid: 389796b8af147744e983721fe80581d0, type: 2}
   _gameSettings: {fileID: 11400000, guid: 9511c115e089e3046b9309659569e27e, type: 2}
   _prefabsConfig: {fileID: 11400000, guid: 898382bdfdf568c49a4a63417fdf8399, type: 2}
+  _cellColorsConfig: {fileID: 11400000, guid: d0a223d747bfd6b488f21930d0512d2c, type: 2}

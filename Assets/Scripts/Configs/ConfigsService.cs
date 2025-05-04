@@ -14,6 +14,7 @@ namespace BeaverBlocks.Configs
         [SerializeField] private BlocksDatabase _blocksDatabase;
         [SerializeField] private GameSettings _gameSettings;
         [SerializeField] private PrefabsConfig _prefabsConfig;
+        [SerializeField] private CellColorsConfig _cellColorsConfig;
         private readonly Dictionary<Type, ScriptableObject> _configs = new();
 
         public void Initialize()
@@ -22,6 +23,7 @@ namespace BeaverBlocks.Configs
             AddToCache(_blocksDatabase);
             AddToCache(_gameSettings);
             AddToCache(_prefabsConfig);
+            AddToCache(_cellColorsConfig);
         }
 
         public T Get<T>() where T : ScriptableObject

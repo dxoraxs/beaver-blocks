@@ -2,9 +2,11 @@
 using BeaverBlocks.Configs.Data;
 using BeaverBlocks.Core.Cells;
 using BeaverBlocks.Core.Game.BlockPlace;
+using BeaverBlocks.Core.Game.Level;
 using BeaverBlocks.DI.Factories;
 using BeaverBlocks.UI;
 using BeaverBlocks.UI.Views.Game;
+using Cysharp.Threading.Tasks;
 using UnityEngine.Scripting;
 
 namespace BeaverBlocks.Core.Game
@@ -16,6 +18,7 @@ namespace BeaverBlocks.Core.Game
         private readonly IPanelService _panelService;
         private readonly CellsManager _cellsManager;
         private readonly BlockPlaceManager _blockPlaceManager;
+        private uint _levelIndex;
 
         private GameView GameView => _panelService.Get<GameView>();
         
@@ -38,6 +41,8 @@ namespace BeaverBlocks.Core.Game
             
             GameView.Initialize(_iocFactory.Create<GamePresenter>());
             GameView.SetEnabled(true);
+
+            StartLevel().Forget();
         }
 
         private void InitializeCells()
@@ -54,9 +59,10 @@ namespace BeaverBlocks.Core.Game
             _blockPlaceManager.SetBlockPlaces(blockPlaceInstaller.BlockPlacePresenters);
         }
 
-        private void StartLevel()
+        private async UniTask StartLevel()
         {
-            
+            var cellLevelInstaller = _iocFactory.Create<CellLevelInstaller>();
+            cellLevelInstaller.Install(_levelIndex);
         }
     }
 }
