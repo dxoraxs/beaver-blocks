@@ -14,13 +14,19 @@ namespace BeaverBlocks.UI.Views.Game.BlockPlace
         {
             _presenter = presenter;
 
-            _presenter.BlockIconStream.Subscribe(SetBlockSprite).AddTo(this);
+            _presenter.BlockIconStream.Subscribe(SetSprite).AddTo(this);
+            _presenter.BlockColorStream.Subscribe(SetColor).AddTo(this);
         }
 
-        private void SetBlockSprite(Sprite sprite)
+        private void SetSprite(Sprite sprite)
         {
             _image.enabled = sprite != null;
             _image.sprite = sprite;
+        }
+
+        private void SetColor(Color color)
+        {
+            _image.color = color;
         }
         
         public void OnPointerDown(PointerEventData eventData)

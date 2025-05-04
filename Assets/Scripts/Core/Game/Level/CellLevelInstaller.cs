@@ -9,25 +9,23 @@ namespace BeaverBlocks.Core.Game.Level
     public class CellLevelInstaller
     {
         private readonly CellsManager _cellsManager;
-        private readonly IConfigsService _configsService;
+        private readonly CellColorsConfig _colorsConfig;
 
         [Preserve]
         public CellLevelInstaller(CellsManager cellsManager, IConfigsService configsService)
         {
             _cellsManager = cellsManager;
-            _configsService = configsService;
+            _colorsConfig = configsService.Get<CellColorsConfig>();
         }
 
-        public void Install(uint levelIndex)
+        public void Install(LevelConfig levelConfig)
         {
-            var allLevels = _configsService.Get<LevelsDatabase>().LevelConfigs.ToArray();
-            var currentLevel = allLevels[levelIndex % allLevels.Length];
-            var preLoadCells = currentLevel.PrePlacedCells;
+            var preLoadCells = levelConfig.PrePlacedCells;
 
             foreach (var prePlacedCell in preLoadCells)
             {
                 var cellKey = (prePlacedCell.Position.x,prePlacedCell.Position.y);
-                var currentColor = _configsService.Get<CellColorsConfig>().CellColors[prePlacedCell.GroupIndex];
+                var currentColor = _colorsConfig.CellColors[prePlacedCell.GroupIndex];
                 _cellsManager.CellPresenters[cellKey].SetBlockColor(currentColor);
             }
         }

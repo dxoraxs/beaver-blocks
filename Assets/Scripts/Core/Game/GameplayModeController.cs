@@ -1,4 +1,6 @@
-﻿using BeaverBlocks.Configs;
+﻿using System;
+using System.Linq;
+using BeaverBlocks.Configs;
 using BeaverBlocks.Configs.Data;
 using BeaverBlocks.Core.Cells;
 using BeaverBlocks.Core.Game.BlockPlace;
@@ -61,8 +63,22 @@ namespace BeaverBlocks.Core.Game
 
         private async UniTask StartLevel()
         {
+            var currentLevel = GetLevel();
+
             var cellLevelInstaller = _iocFactory.Create<CellLevelInstaller>();
-            cellLevelInstaller.Install(_levelIndex);
+            cellLevelInstaller.Install(currentLevel);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            
+            var initialLevelBlockPlaceInstaller = _iocFactory.Create<InitialLevelBlockInstaller>();
+            initialLevelBlockPlaceInstaller.Install(currentLevel);
+        }
+
+        private LevelConfig GetLevel()
+        {
+            var allLevel = _configsService.Get<LevelsDatabase>().LevelConfigs.ToArray();
+            var currentLevel = allLevel[_levelIndex % allLevel.Length];
+            return currentLevel;
         }
     }
 }

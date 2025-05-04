@@ -9,6 +9,7 @@ namespace BeaverBlocks.Configs.Data
     {
         [field: SerializeField] public string Id { get; private set; }
         [field: SerializeField] public Vector2Int[] Shape { get; private set; }
+        [field: SerializeField] public Sprite Sprite { get; private set; }
         
         public void SetShape(Vector2Int[] newShape)
         {

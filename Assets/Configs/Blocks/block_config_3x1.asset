@@ -17,3 +17,4 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 2, y: 0}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: d017b59c86bf81941bf80c22af720b94, type: 3}

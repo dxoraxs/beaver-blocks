@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: level_config_1
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 
-  <InitialBlocks>k__BackingField: []
+  <InitialBlocks>k__BackingField:
+  - {fileID: 11400000, guid: fd6a17f35ab727d4197875a292957289, type: 2}
   <PrePlacedCells>k__BackingField:
   - <Position>k__BackingField: {x: 3, y: 7}
     <GroupIndex>k__BackingField: 0
