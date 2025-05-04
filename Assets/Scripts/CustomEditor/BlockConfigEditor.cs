@@ -1,24 +1,27 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 using BeaverBlocks.Configs.Data;
+using Unity.VisualScripting;
 
 [CustomEditor(typeof(BlockConfig))]
 public class BlockConfigEditor : Editor
 {
-    private const int gridSize = 8;
-    private const int cellSize = 25;
-    private const int padding = 5;
+    private const int _cellSize = 25;
+    private const int _padding = 5;
 
-    private HashSet<Vector2Int> selectedCells = new();
+    private readonly HashSet<Vector2Int> _selectedCells = new();
 
-    private BlockConfig config;
+    private uint _gridSize = 8;
+    private BlockConfig _config;
 
     private void OnEnable()
     {
-        config = (BlockConfig)target;
-        
+        _config = (BlockConfig)target;
+
         LoadConfig();
+        TryLoadGridSizeFromGameSettings();
     }
 
     public override void OnInspectorGUI()
@@ -27,31 +30,33 @@ public class BlockConfigEditor : Editor
         GUILayout.Space(10);
         EditorGUILayout.LabelField("Block Shape Editor", EditorStyles.boldLabel);
 
-        Rect gridRect = GUILayoutUtility.GetRect(gridSize * (cellSize + padding), gridSize * (cellSize + padding));
+        var gridRect =
+            GUILayoutUtility.GetRect(_gridSize * (_cellSize + _padding), _gridSize * (_cellSize + _padding));
 
-        for (int y = 0; y < gridSize; y++)
+        for (var y = 0; y < _gridSize; y++)
         {
-            for (int x = 0; x < gridSize; x++)
+            for (var x = 0; x < _gridSize; x++)
             {
                 Vector2Int cell = new(x, y);
 
                 Rect cellRect = new(
-                    gridRect.x + x * (cellSize + padding),
-                    gridRect.y + y * (cellSize + padding),
-                    cellSize,
-                    cellSize
+                    gridRect.x + x * (_cellSize + _padding),
+                    gridRect.y + (_gridSize - y - 1) * (_cellSize + _padding),
+                    _cellSize,
+                    _cellSize
                 );
 
-                bool isSelected = selectedCells.Contains(cell);
-                Color originalColor = GUI.color;
+                var isSelected = _selectedCells.Contains(cell);
+                var originalColor = GUI.color;
                 GUI.color = isSelected ? Color.green : Color.white;
                 if (GUI.Button(cellRect, ""))
                 {
                     if (isSelected)
-                        selectedCells.Remove(cell);
+                        _selectedCells.Remove(cell);
                     else
-                        selectedCells.Add(cell);
+                        _selectedCells.Add(cell);
                 }
+
                 GUI.color = originalColor;
             }
         }
@@ -62,16 +67,33 @@ public class BlockConfigEditor : Editor
         {
             LoadConfig();
         }
+
         if (GUILayout.Button("Save to config"))
         {
-            Undo.RecordObject(config, "Update Shape");
-            config.SetShape(new List<Vector2Int>(selectedCells).ToArray());
-            EditorUtility.SetDirty(config);
+            Undo.RecordObject(_config, "Update Shape");
+            _config.SetShape(new List<Vector2Int>(_selectedCells).ToArray());
+            EditorUtility.SetDirty(_config);
         }
     }
 
+    private void TryLoadGridSizeFromGameSettings()
+    {
+        var guids = AssetDatabase.FindAssets("t:GameSettings", new[] { "Assets/Configs" });
+
+        if (guids.Length == 0) return;
+
+        var settingsPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+        var settings = AssetDatabase.LoadAssetAtPath<GameSettings>(settingsPath);
+
+        if (settings != null)
+        {
+            _gridSize = settings.GridSize;
+        }
+    }
+    
     private void LoadConfig()
     {
-        selectedCells = new HashSet<Vector2Int>(config.Shape);
+        _selectedCells.Clear();
+        _selectedCells.AddRange(_config.Shape);
     }
 }

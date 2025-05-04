@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e2e77c7a7004d8baead52238bf3e4e7, type: 3}
   m_Name: game_settings
   m_EditorClassIdentifier: 
-  <GridSizeX>k__BackingField: 8
-  <GridSizeY>k__BackingField: 8
+  <GridSize>k__BackingField: 8
   <PointsPerCube>k__BackingField: 10
+  <CountBottomPlace>k__BackingField: 3

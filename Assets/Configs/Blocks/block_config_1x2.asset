@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 
   <Shape>k__BackingField:
-  - {x: 0, y: 7}
-  - {x: 0, y: 6}
+  - {x: 0, y: 0}
+  - {x: 0, y: 1}
