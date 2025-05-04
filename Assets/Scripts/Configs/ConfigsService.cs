@@ -16,14 +16,12 @@ namespace BeaverBlocks.Configs
         [SerializeField] private PrefabsConfig _prefabsConfig;
         private readonly Dictionary<Type, ScriptableObject> _configs = new();
 
-        public UniTask Initialize()
+        public void Initialize()
         {
             AddToCache(_levelsDatabase);
             AddToCache(_blocksDatabase);
             AddToCache(_gameSettings);
             AddToCache(_prefabsConfig);
-            
-            return UniTask.CompletedTask;
         }
 
         public T Get<T>() where T : ScriptableObject

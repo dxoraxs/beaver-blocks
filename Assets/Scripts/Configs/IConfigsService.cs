@@ -5,7 +5,7 @@ namespace BeaverBlocks.Configs
 {
     public interface IConfigsService
     {
-        UniTask Initialize();
+        void Initialize();
         T Get<T>() where T : ScriptableObject;
     }
 }

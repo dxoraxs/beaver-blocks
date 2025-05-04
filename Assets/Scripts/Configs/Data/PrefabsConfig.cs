@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using BeaverBlocks.Core.Cells;
+using BeaverBlocks.UI.Views.Game.Cells;
+using UnityEngine;
 
 namespace BeaverBlocks.Configs.Data
 {
@@ -6,5 +8,6 @@ namespace BeaverBlocks.Configs.Data
         order = 0)]
     public class PrefabsConfig : ScriptableObject
     {
+        [field: SerializeField] public CellView CellView { get; private set; }
     }
 }

@@ -6,8 +6,7 @@ namespace BeaverBlocks.Configs.Data
         order = 0)]
     public class GameSettings : ScriptableObject
     {
-        [field: SerializeField] public int GridSizeX { get; private set; } = 8;
-        [field: SerializeField] public int GridSizeY { get; private set; } = 8;
-        [field: SerializeField] public int PointsPerCube { get; private set; } = 10;
+        [field: SerializeField] public uint GridSize { get; private set; } = 8;
+        [field: SerializeField] public uint PointsPerCube { get; private set; } = 10;
     }
 }
