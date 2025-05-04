@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace BeaverBlocks.Configs.Data
 {
@@ -8,5 +9,10 @@ namespace BeaverBlocks.Configs.Data
     {
         [field: SerializeField] public string Id { get; private set; }
         [field: SerializeField] public Vector2Int[] Shape { get; private set; }
+        
+        public void SetShape(Vector2Int[] newShape)
+        {
+            Shape = newShape;
+        }
     }
 }
