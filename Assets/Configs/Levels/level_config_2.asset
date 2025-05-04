@@ -14,4 +14,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 
   <InitialBlocks>k__BackingField: []
-  <PrePlacedPositions>k__BackingField: []
+  <PrePlacedCells>k__BackingField:
+  - <Position>k__BackingField: {x: 0, y: 2}
+    <GroupIndex>k__BackingField: 0
+  - <Position>k__BackingField: {x: 0, y: 3}
+    <GroupIndex>k__BackingField: 0
+  - <Position>k__BackingField: {x: 0, y: 4}
+    <GroupIndex>k__BackingField: 0
+  - <Position>k__BackingField: {x: 1, y: 2}
+    <GroupIndex>k__BackingField: 1
+  - <Position>k__BackingField: {x: 1, y: 3}
+    <GroupIndex>k__BackingField: 1
+  - <Position>k__BackingField: {x: 1, y: 4}
+    <GroupIndex>k__BackingField: 1
+  - <Position>k__BackingField: {x: 3, y: 2}
+    <GroupIndex>k__BackingField: 2
+  - <Position>k__BackingField: {x: 3, y: 3}
+    <GroupIndex>k__BackingField: 2
+  - <Position>k__BackingField: {x: 3, y: 4}
+    <GroupIndex>k__BackingField: 2
+  - <Position>k__BackingField: {x: 4, y: 2}
+    <GroupIndex>k__BackingField: 3
+  - <Position>k__BackingField: {x: 4, y: 3}
+    <GroupIndex>k__BackingField: 3
+  - <Position>k__BackingField: {x: 4, y: 4}
+    <GroupIndex>k__BackingField: 3
+  - <Position>k__BackingField: {x: 5, y: 2}
+    <GroupIndex>k__BackingField: 4
+  - <Position>k__BackingField: {x: 5, y: 3}
+    <GroupIndex>k__BackingField: 4
+  - <Position>k__BackingField: {x: 5, y: 4}
+    <GroupIndex>k__BackingField: 4
+  - <Position>k__BackingField: {x: 6, y: 2}
+    <GroupIndex>k__BackingField: 5
+  - <Position>k__BackingField: {x: 6, y: 3}
+    <GroupIndex>k__BackingField: 5
+  - <Position>k__BackingField: {x: 6, y: 4}
+    <GroupIndex>k__BackingField: 5
+  - <Position>k__BackingField: {x: 7, y: 2}
+    <GroupIndex>k__BackingField: 6
+  - <Position>k__BackingField: {x: 7, y: 3}
+    <GroupIndex>k__BackingField: 6
+  - <Position>k__BackingField: {x: 7, y: 4}
+    <GroupIndex>k__BackingField: 6

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace BeaverBlocks.Configs.Data
 {
@@ -8,6 +9,24 @@ namespace BeaverBlocks.Configs.Data
     {
         [field: SerializeField] public string Id { get; private set; }
         [field: SerializeField] public BlockConfig[] InitialBlocks { get; private set; }
-        [field: SerializeField] public Vector2Int[] PrePlacedPositions { get; private set; }
+        [field: SerializeField] public PrePlacedCell[] PrePlacedCells { get; private set; }
+        
+        public void SetCells(PrePlacedCell[] cells)
+        {
+            PrePlacedCells = cells;
+        }
+    }
+
+    [Serializable]
+    public class PrePlacedCell
+    {
+        [field:SerializeField] public Vector2Int Position { get; private set; }
+        [field:SerializeField] public int GroupIndex { get; private set; }
+        
+        public PrePlacedCell(Vector2Int pos, int group)
+        {
+            Position = pos;
+            GroupIndex = group;
+        }
     }
 }
