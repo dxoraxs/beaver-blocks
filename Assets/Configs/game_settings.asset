@@ -15,3 +15,5 @@ MonoBehaviour:
   <GridSize>k__BackingField: 8
   <PointsPerCube>k__BackingField: 10
   <CountBottomPlace>k__BackingField: 3
+  <DragVerticalOffset>k__BackingField: 200
+  <SpeedDragBlock>k__BackingField: 6

@@ -15,6 +15,8 @@ MonoBehaviour:
   <Id>k__BackingField: 
   <InitialBlocks>k__BackingField:
   - {fileID: 11400000, guid: fd6a17f35ab727d4197875a292957289, type: 2}
+  - {fileID: 11400000, guid: 0dc7e63da6ad0f94c8b705e913a484e3, type: 2}
+  - {fileID: 11400000, guid: fd6a17f35ab727d4197875a292957289, type: 2}
   <PrePlacedCells>k__BackingField:
   - <Position>k__BackingField: {x: 3, y: 7}
     <GroupIndex>k__BackingField: 0

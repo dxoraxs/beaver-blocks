@@ -7,6 +7,7 @@ using BeaverBlocks.UI.Views.Game.BottomView;
 using BeaverBlocks.UI.Views.Game.DragLayer;
 using BeaverBlocks.UI.Views.Game.GridCells;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Scripting;
 
 namespace BeaverBlocks.UI.Views.Game
@@ -16,6 +17,14 @@ namespace BeaverBlocks.UI.Views.Game
         private readonly CellPresentersManager _cellPresentersManager;
         private readonly BlockPlacePresenterManager _blockPlacePresenterManager;
         private readonly DragBlockController _dragBlockController;
+        private readonly IGridCellsPresenter _gridCellsPresenter;
+
+        public IGridCellsPresenter GridCellsPresenter => _gridCellsPresenter;
+
+        public IBottomBlocksPresenter BottomBlocksPresenter =>
+            _iocFactory.Create<BottomBlocksPresenter, BlockPlacePresenterManager>(_blockPlacePresenterManager);
+
+        public IDragBlockPresenter DragBlockPresenter => _iocFactory.Create<DragBlockPresenter, DragBlockController>(_dragBlockController);
 
         [Preserve]
         protected GamePresenter(IPanelService panelService, IIocFactory iocFactory,
@@ -25,14 +34,18 @@ namespace BeaverBlocks.UI.Views.Game
             _cellPresentersManager = cellPresentersManager;
             _blockPlacePresenterManager = blockPlacePresenterManager;
             _dragBlockController = dragBlockController;
+
+            _gridCellsPresenter = _iocFactory.Create<GridCellPresenter, CellPresentersManager>(_cellPresentersManager);
         }
 
-        public IGridCellsPresenter GridCellsPresenter =>
-            _iocFactory.Create<GridCellPresenter, CellPresentersManager>(_cellPresentersManager);
+        public bool IsGridRaycast(Vector2 point)
+        {
+            return _gridCellsPresenter.IsPointInsideUIElement(point);
+        }
 
-        public IBottomBlocksPresenter BottomBlocksPresenter =>
-            _iocFactory.Create<BottomBlocksPresenter, BlockPlacePresenterManager>(_blockPlacePresenterManager);
-
-        public IDragBlockPresenter DragBlockPresenter => _iocFactory.Create<DragBlockPresenter, DragBlockController>(_dragBlockController);
+        public (int x, int y) GetGridIndexFromScreenPoint(Vector2 point)
+        {
+            return _gridCellsPresenter.GetGridIndexFromScreenPoint(point);
+        }
     }
 }

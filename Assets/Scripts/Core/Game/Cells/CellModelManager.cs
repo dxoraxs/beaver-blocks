@@ -13,6 +13,11 @@ namespace BeaverBlocks.Core.Cells
         [Preserve]
         public CellModelManager()
         {}
+
+        public bool IsCellBusy((int, int) key)
+        {
+            return _cellModels[key].IsBusyStream.Value;
+        }
         
         public void SetModels(IReadOnlyDictionary<(int, int), CellModel> models)
         {
