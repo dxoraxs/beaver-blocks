@@ -5,14 +5,10 @@ namespace BeaverBlocks.UI.Views.Game.Cells
 {
     public interface ICellPresenter
     {
-        IReadOnlyReactiveProperty<bool> EnableBlockStream { get; }
-        IReadOnlyReactiveProperty<bool> EnablePreviewBlockStream { get; }
-        IReadOnlyReactiveProperty<Color> BlockColorStream { get; }
-        IReadOnlyReactiveProperty<Color> PreviewBlockColorStream { get; }
+        IReadOnlyReactiveProperty<bool> CellEnableStream { get; }
+        IReadOnlyReactiveProperty<Color> CellColorStream { get; }
         
-        void SetPreviewColor(Color color);
-        void SetBlockColor(Color color);
-        void ClearPreview();
-        void ClearBlock();
+        void SetCellColor(Color color);
+        void SetEnable(bool value);
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: blocks_database
   m_EditorClassIdentifier: 
   _blockConfigs:
-  - {fileID: 11400000, guid: 9aa1f47ff2627b44baeac7bfa6c94af1, type: 2}
-  - {fileID: 11400000, guid: eb7aa6c7b11a8054099a54cb7693a254, type: 2}
+  - {fileID: 11400000, guid: 0dc7e63da6ad0f94c8b705e913a484e3, type: 2}
+  - {fileID: 11400000, guid: fd6a17f35ab727d4197875a292957289, type: 2}

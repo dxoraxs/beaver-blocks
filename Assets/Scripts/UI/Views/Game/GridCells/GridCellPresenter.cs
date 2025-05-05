@@ -14,17 +14,17 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
         private readonly IConfigsService _configsService;
         private readonly GameSettings _gameSettings;
         private readonly PrefabsConfig _prefabsConfig;
-        private readonly CellsManager _cellsManager;
+        private readonly CellPresenterManager _cellPresenterManager;
         
         public CellView GetCellViewPrefab => _prefabsConfig.CellView;
         public uint SizeGrid => _gameSettings.GridSize;
-        public IEnumerable<ICellPresenter> GetCellPresenters => _cellsManager.GetCellPresenters;
+        public IEnumerable<ICellPresenter> GetCellPresenters => _cellPresenterManager.GetCellPresenters;
 
         [Preserve]
-        public GridCellPresenter(IConfigsService configsService, CellsManager cellsManager)
+        public GridCellPresenter(IConfigsService configsService, CellPresenterManager cellPresenterManager)
         {
             _configsService = configsService;
-            _cellsManager = cellsManager;
+            _cellPresenterManager = cellPresenterManager;
             
             _gameSettings = _configsService.Get<GameSettings>();
             _prefabsConfig = _configsService.Get<PrefabsConfig>();

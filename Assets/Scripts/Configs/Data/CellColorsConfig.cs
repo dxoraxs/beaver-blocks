@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace BeaverBlocks.Configs.Data
 {
@@ -6,6 +7,13 @@ namespace BeaverBlocks.Configs.Data
         order = 0)]
     public class CellColorsConfig : ScriptableObject
     {
-        [field:SerializeField] public Color[] CellColors { get; private set; }
+        [field:SerializeField] public PairColorValue[] CellColors { get; private set; }
+    }
+
+    [Serializable]
+    public class PairColorValue
+    {
+        [field:SerializeField] public Color DefaultColors { get; private set; }
+        [field:SerializeField] public Color PreviewColors { get; private set; }
     }
 }

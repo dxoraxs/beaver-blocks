@@ -3,14 +3,14 @@ using BeaverBlocks.UI.Views.Game.Cells;
 
 namespace BeaverBlocks.Core.Cells
 {
-    public class CellsInstaller
+    public class CellModelInstaller
     {
         private readonly uint _sizeGrid;
-        private readonly Dictionary<(int, int), ICellPresenter> _cellPresenters = new(); 
+        private readonly Dictionary<(int, int), CellModel> _cellModels = new(); 
         
-        public IReadOnlyDictionary<(int, int), ICellPresenter> CellPresenters => _cellPresenters;
+        public IReadOnlyDictionary<(int, int), CellModel> CellModels => _cellModels;
         
-        public CellsInstaller(uint sizeGrid)
+        public CellModelInstaller(uint sizeGrid)
         {
             _sizeGrid = sizeGrid;
         }
@@ -21,7 +21,7 @@ namespace BeaverBlocks.Core.Cells
             {
                 for (var y = 0; y < _sizeGrid; y++)
                 {
-                    _cellPresenters.Add((x, y), new CellPresenter());
+                    _cellModels.Add((x, y), new CellModel());
                 }
             }
         }

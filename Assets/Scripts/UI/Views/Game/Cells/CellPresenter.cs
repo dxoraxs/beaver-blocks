@@ -6,36 +6,21 @@ namespace BeaverBlocks.UI.Views.Game.Cells
 {
     public class CellPresenter : ICellPresenter
     {
-        private readonly BoolReactiveProperty _blockEnable = new();
-        private readonly BoolReactiveProperty _previewEnable = new();
-        private readonly ReactiveProperty<Color> _blockColor = new();
-        private readonly ReactiveProperty<Color> _previewColor = new();
-        
-        public IReadOnlyReactiveProperty<bool> EnableBlockStream => _blockEnable;
-        public IReadOnlyReactiveProperty<bool> EnablePreviewBlockStream => _previewEnable;
-        public IReadOnlyReactiveProperty<Color> BlockColorStream => _blockColor;
-        public IReadOnlyReactiveProperty<Color> PreviewBlockColorStream => _previewColor;
+        private readonly BoolReactiveProperty _cellEnable = new();
+        private readonly ReactiveProperty<Color> _cellColor = new();
 
-        public void SetPreviewColor(Color color)
+        public IReadOnlyReactiveProperty<bool> CellEnableStream => _cellEnable;
+        public IReadOnlyReactiveProperty<Color> CellColorStream => _cellColor;
+
+        public void SetEnable(bool value)
         {
-            _previewEnable.Value = true;
-            _previewColor.Value = color;
+            _cellEnable.Value = value;
         }
 
-        public void SetBlockColor(Color color)
+        public void SetCellColor(Color color)
         {
-            _blockEnable.Value = true;
-            _blockColor.Value = color;
-        }
-
-        public void ClearPreview()
-        {
-            _previewEnable.Value = false;
-        }
-
-        public void ClearBlock()
-        {
-            _blockEnable.Value = false;
+            _cellEnable.Value = true;
+            _cellColor.Value = color;
         }
     }
 }

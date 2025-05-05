@@ -11,13 +11,13 @@ namespace BeaverBlocks.UI.Views.Game
 {
     public class GamePresenter : BasePresenter<GameView>, IGamePresenter
     {
-        private readonly CellsManager _cellsManager;
+        private readonly CellPresenterManager _cellPresenterManager;
         private readonly BlockPlaceManager _blockPlaceManager;
         
         [Preserve]
-        protected GamePresenter(IPanelService panelService, IIocFactory iocFactory, CellsManager cellsManager, BlockPlaceManager blockPlaceManager) : base(panelService, iocFactory)
+        protected GamePresenter(IPanelService panelService, IIocFactory iocFactory, CellPresenterManager cellPresenterManager, BlockPlaceManager blockPlaceManager) : base(panelService, iocFactory)
         {
-            _cellsManager = cellsManager;
+            _cellPresenterManager = cellPresenterManager;
             _blockPlaceManager = blockPlaceManager;
         }
 

@@ -13,10 +13,17 @@ MonoBehaviour:
   m_Name: cell_colors_config
   m_EditorClassIdentifier: 
   <CellColors>k__BackingField:
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: 0.5170327, b: 0, a: 1}
-  - {r: 1, g: 0.902462, b: 0, a: 1}
-  - {r: 0.14651299, g: 1, b: 0, a: 1}
-  - {r: 0, g: 0.994102, b: 1, a: 1}
-  - {r: 0.023159027, g: 0, b: 1, a: 1}
-  - {r: 0.9292388, g: 0, b: 1, a: 1}
+  - <DefaultColors>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
+    <PreviewColors>k__BackingField: {r: 1, g: 0, b: 0, a: 0.5019608}
+  - <DefaultColors>k__BackingField: {r: 1, g: 0.61370635, b: 0, a: 1}
+    <PreviewColors>k__BackingField: {r: 1, g: 0.6117647, b: 0, a: 0.5019608}
+  - <DefaultColors>k__BackingField: {r: 1, g: 0.9083814, b: 0, a: 1}
+    <PreviewColors>k__BackingField: {r: 1, g: 0.9098039, b: 0, a: 0.5019608}
+  - <DefaultColors>k__BackingField: {r: 0.010392904, g: 1, b: 0, a: 1}
+    <PreviewColors>k__BackingField: {r: 0.011764706, g: 1, b: 0, a: 0.5019608}
+  - <DefaultColors>k__BackingField: {r: 0, g: 1, b: 0.9474697, a: 1}
+    <PreviewColors>k__BackingField: {r: 0, g: 1, b: 0.9490196, a: 0.5019608}
+  - <DefaultColors>k__BackingField: {r: 0, g: 0.06581974, b: 1, a: 1}
+    <PreviewColors>k__BackingField: {r: 0, g: 0.06666667, b: 1, a: 0.5019608}
+  - <DefaultColors>k__BackingField: {r: 1, g: 0, b: 0.9599676, a: 1}
+    <PreviewColors>k__BackingField: {r: 1, g: 0, b: 0.9607843, a: 0.5019608}

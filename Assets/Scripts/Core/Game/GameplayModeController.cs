@@ -18,20 +18,26 @@ namespace BeaverBlocks.Core.Game
         private readonly IIocFactory _iocFactory;
         private readonly IConfigsService _configsService;
         private readonly IPanelService _panelService;
-        private readonly CellsManager _cellsManager;
+        private readonly CellModelManager _cellModelManager;
+        private readonly CellPresenterManager _cellPresenterManager;
         private readonly BlockPlaceManager _blockPlaceManager;
+
+        private readonly LevelsDatabase _levelsDatabase;
         private uint _levelIndex;
 
         private GameView GameView => _panelService.Get<GameView>();
         
         [Preserve]
-        public GameplayModeController(IConfigsService configsService, IPanelService panelService, IIocFactory iocFactory, CellsManager cellsManager, BlockPlaceManager blockPlaceManager)
+        public GameplayModeController(IConfigsService configsService, IPanelService panelService, IIocFactory iocFactory, CellPresenterManager cellPresenterManager, BlockPlaceManager blockPlaceManager, CellModelManager cellModelManager)
         {
             _configsService = configsService;
             _panelService = panelService;
             _iocFactory = iocFactory;
-            _cellsManager = cellsManager;
+            _cellPresenterManager = cellPresenterManager;
             _blockPlaceManager = blockPlaceManager;
+            _cellModelManager = cellModelManager;
+
+            _levelsDatabase = _configsService.Get<LevelsDatabase>();
 
             Initialize();
         }
@@ -49,9 +55,13 @@ namespace BeaverBlocks.Core.Game
 
         private void InitializeCells()
         {
-            var cellsInstaller = new CellsInstaller(_configsService.Get<GameSettings>().GridSize);
-            cellsInstaller.Initialize();
-            _cellsManager.SetCells(cellsInstaller.CellPresenters);
+            var cellModelInstaller = new CellModelInstaller(_configsService.Get<GameSettings>().GridSize);
+            cellModelInstaller.Initialize();
+            _cellModelManager.SetModels(cellModelInstaller.CellModels);
+            
+            var cellPresentersInstaller = new CellPresentersInstaller(_configsService.Get<GameSettings>().GridSize);
+            cellPresentersInstaller.Initialize();
+            _cellPresenterManager.SetCells(cellPresentersInstaller.CellPresenters, _cellModelManager.CellModels.Values);
         }
 
         private void InitializeBlockPlaces()
@@ -76,7 +86,7 @@ namespace BeaverBlocks.Core.Game
 
         private LevelConfig GetLevel()
         {
-            var allLevel = _configsService.Get<LevelsDatabase>().LevelConfigs.ToArray();
+            var allLevel = _levelsDatabase.LevelConfigs.ToArray();
             var currentLevel = allLevel[_levelIndex % allLevel.Length];
             return currentLevel;
         }

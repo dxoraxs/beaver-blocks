@@ -30,7 +30,7 @@ namespace BeaverBlocks.Core.Game.Level
             for (var index = 0u; index < initialBlocks.Length && index < _countBottomPlace; index++)
             {
                 var currentBlockSprite = initialBlocks[index].Sprite;
-                var randomColor = _colorsConfig.CellColors[Random.Range(0, _colorsConfig.CellColors.Length)];
+                var randomColor = _colorsConfig.CellColors[Random.Range(0, _colorsConfig.CellColors.Length)].DefaultColors;
                 _blockPlaceManager.BlockPlacePresenters[index].SetSprite(currentBlockSprite);
                 _blockPlaceManager.BlockPlacePresenters[index].SetColor(randomColor);
             }

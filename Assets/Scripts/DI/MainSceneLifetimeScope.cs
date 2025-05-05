@@ -21,7 +21,8 @@ namespace BeaverBlocks.DI
             builder.Register<VContainerFactory>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterInstance(_configsService).As<IConfigsService>();
             builder.RegisterInstance(_panelService).As<IPanelService>();
-            builder.Register<CellsManager>(Lifetime.Singleton).AsSelf();
+            builder.Register<CellModelManager>(Lifetime.Singleton).AsSelf();
+            builder.Register<CellPresenterManager>(Lifetime.Singleton).AsSelf();
             builder.Register<BlockPlaceManager>(Lifetime.Singleton).AsSelf();
             
             builder.RegisterEntryPoint<GameController>(Lifetime.Scoped).AsSelf();
