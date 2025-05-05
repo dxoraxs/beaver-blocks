@@ -8,19 +8,15 @@ namespace BeaverBlocks.UI.Views.Game.BlockPlace
     {
         private readonly ReactiveProperty<Sprite> _sprite = new();
         private readonly ReactiveProperty<Color> _color = new();
-
-        public event Action OnBlockPointDown;
+        private readonly Subject<Unit> _pointerDownStream = new();
+        
+        public IObservable<Unit> PointerDownStream => _pointerDownStream;
         public IReadOnlyReactiveProperty<Sprite> BlockIconStream => _sprite;
         public IReadOnlyReactiveProperty<Color> BlockColorStream => _color;
-
-        public BlockPlacePresenter()
-        {
-            
-        }
         
         public void OnPointerDown()
         {
-            OnBlockPointDown?.Invoke();
+            _pointerDownStream?.OnNext(Unit.Default);
         }
 
         public void SetSprite(Sprite sprite)

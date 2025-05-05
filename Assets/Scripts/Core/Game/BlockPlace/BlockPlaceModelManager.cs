@@ -15,6 +15,16 @@ namespace BeaverBlocks.Core.Game.BlockPlace
         {
         }
 
+        public void SetPlace(uint index, string id, int groupColor)
+        {
+            PlaceModels[index].SetBlock(id, groupColor);
+        }
+
+        public void ClearPlace(uint index)
+        {
+            PlaceModels[index].ClearPlace();
+        }
+
         public void SetModels(IReadOnlyDictionary<uint, BlockPlaceModel> placeModels)
         {
             _placeModels.AddRange(placeModels);

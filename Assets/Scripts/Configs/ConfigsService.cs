@@ -4,11 +4,12 @@ using BeaverBlocks.Configs.Data;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace BeaverBlocks.Configs
 {
     [CreateAssetMenu(fileName = "configs_service", menuName = "Create/Configs " + nameof(ConfigsService), order = 0)]
-    public class ConfigsService : ScriptableObject, IConfigsService
+    public class ConfigsService : ScriptableObject, IConfigsService, IInitializable
     {
         [SerializeField] private LevelsDatabase _levelsDatabase;
         [SerializeField] private BlocksDatabase _blocksDatabase;

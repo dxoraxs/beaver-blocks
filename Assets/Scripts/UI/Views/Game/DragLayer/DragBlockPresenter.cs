@@ -5,6 +5,7 @@ using BeaverBlocks.Configs.Data;
 using BeaverBlocks.Core.Game;
 using BeaverBlocks.UI.Views.Game.DragBlockObject;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Scripting;
 using Object = UnityEngine.Object;
@@ -14,22 +15,24 @@ namespace BeaverBlocks.UI.Views.Game.DragLayer
     public class DragBlockPresenter : IDragBlockPresenter
     {
         private readonly IConfigsService _configsService;
-        private readonly IInputController _inputController;
-        private readonly CellColorsConfig _cellColorsConfig;
         private readonly PrefabsConfig _prefabsConfig;
         private readonly GameSettings _gameSettings;
-        private CancellationTokenSource _cancellationTokenSource;
+        private readonly DragBlockController _dragBlockController;
+        private DragBlockObjectView _dragBlockObjectView;
         private Transform _dragObjectParent;
 
         [Preserve]
-        public DragBlockPresenter(IConfigsService configsService, IInputController inputController)
+        public DragBlockPresenter(IConfigsService configsService, DragBlockController dragBlockController)
         {
             _configsService = configsService;
-            _inputController = inputController;
+            _dragBlockController = dragBlockController;
 
-            _cellColorsConfig = _configsService.Get<CellColorsConfig>();
             _prefabsConfig = _configsService.Get<PrefabsConfig>();
             _gameSettings = _configsService.Get<GameSettings>();
+
+            _dragBlockController.OnStartMove += StartMove;
+            _dragBlockController.OnMove += Move;
+            _dragBlockController.OnEndMove += EndMove;
         }
 
         public void SetParent(Transform parent)
@@ -37,39 +40,24 @@ namespace BeaverBlocks.UI.Views.Game.DragLayer
             _dragObjectParent = parent;
         }
 
-        public void StartMove(Vector2 startPosition, string blockId, int groupColor)
+        private void StartMove(Vector2 startPosition, Sprite blockImage, Color color)
         {
-            _cancellationTokenSource = new CancellationTokenSource();
-            var newDragObject = SpawnNewView();
-            newDragObject.transform.position = startPosition;
-            var dragObjectPresenter =
-                new DragBlockObjectPresenter(_cellColorsConfig.CellColors[groupColor].DefaultColors);
-            newDragObject.Initialize(dragObjectPresenter);
-
-            DragObject(newDragObject.transform).Forget();
+            _dragBlockObjectView = SpawnNewView();
+            var presenter = new DragBlockObjectPresenter(color, blockImage);
+            _dragBlockObjectView.Initialize(presenter);
+            _dragBlockObjectView.transform.position = startPosition;
         }
 
-        private async UniTask DragObject(Transform dragObject)
+        private void Move(Vector2 position)
         {
-            try
-            {
-                while (true)
-                {
-                    await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
-                    var newPoint = _inputController.MousePosition + Vector2.up * _gameSettings.DragVerticalOffset;
-                    dragObject.position = Vector3.Lerp(dragObject.position, newPoint, .5f);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-            }
-
-            Object.Destroy(dragObject.gameObject);
+            position.y += _gameSettings.DragVerticalOffset;
+            _dragBlockObjectView.transform.position = Vector3.Lerp(_dragBlockObjectView.transform.position, position,
+                _gameSettings.SpeedDragBlock * Time.deltaTime);
         }
 
-        public void StopMove()
+        private void EndMove()
         {
-            _cancellationTokenSource.Cancel();
+            Object.Destroy(_dragBlockObjectView.gameObject);
         }
 
         private DragBlockObjectView SpawnNewView()

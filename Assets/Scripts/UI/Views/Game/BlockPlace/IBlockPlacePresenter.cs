@@ -6,7 +6,7 @@ namespace BeaverBlocks.UI.Views.Game.BlockPlace
 {
     public interface IBlockPlacePresenter
     {
-        event Action OnBlockPointDown;
+        IObservable<Unit> PointerDownStream { get; }
         IReadOnlyReactiveProperty<Sprite> BlockIconStream { get; }
         IReadOnlyReactiveProperty<Color> BlockColorStream { get; }
         void OnPointerDown();

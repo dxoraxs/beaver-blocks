@@ -11,7 +11,7 @@ using UnityEngine.Scripting;
 
 namespace BeaverBlocks.Core.Cells
 {
-    public class CellPresenterManager
+    public class CellPresentersManager
     {
         private readonly List<ICellPresenter> _cellPresenters = new();
         private readonly IConfigsService _configsService;
@@ -20,7 +20,7 @@ namespace BeaverBlocks.Core.Cells
         public IEnumerable<ICellPresenter> GetCellPresenters => _cellPresenters;
         
         [Preserve]
-        public CellPresenterManager(IConfigsService configsService)
+        public CellPresentersManager(IConfigsService configsService)
         {
             _configsService = configsService;
 

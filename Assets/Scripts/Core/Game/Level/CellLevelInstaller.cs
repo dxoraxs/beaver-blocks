@@ -11,7 +11,7 @@ namespace BeaverBlocks.Core.Game.Level
         private readonly CellModelManager _cellModelManager;
 
         [Preserve]
-        public CellLevelInstaller(CellModelManager cellModelManager, IConfigsService configsService)
+        public CellLevelInstaller(CellModelManager cellModelManager)
         {
             _cellModelManager = cellModelManager;
         }

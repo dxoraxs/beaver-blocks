@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using BeaverBlocks.UI.Views.Game.Cells;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace BeaverBlocks.UI.Views.Game.GridCells
 {
-    public class GridCellsView : MonoBehaviour
+    public class GridCellsView : MonoBehaviour, IPointerEnterHandler
     {
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
         [SerializeField] private Transform _content;
@@ -42,6 +43,11 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
         {
             var newCellView = Instantiate(_presenter.GetCellViewPrefab, _content);
             return newCellView;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _presenter.OnPointerEnter();
         }
     }
 }
