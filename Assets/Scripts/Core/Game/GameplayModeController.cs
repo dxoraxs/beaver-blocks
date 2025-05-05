@@ -20,7 +20,8 @@ namespace BeaverBlocks.Core.Game
         private readonly IPanelService _panelService;
         private readonly CellModelManager _cellModelManager;
         private readonly CellPresenterManager _cellPresenterManager;
-        private readonly BlockPlaceManager _blockPlaceManager;
+        private readonly BlockPlaceModelManager _blockPlaceModelManager;
+        private readonly BlockPlacePresenterManager _blockPlacePresenterManager;
 
         private readonly LevelsDatabase _levelsDatabase;
         private uint _levelIndex;
@@ -28,14 +29,15 @@ namespace BeaverBlocks.Core.Game
         private GameView GameView => _panelService.Get<GameView>();
         
         [Preserve]
-        public GameplayModeController(IConfigsService configsService, IPanelService panelService, IIocFactory iocFactory, CellPresenterManager cellPresenterManager, BlockPlaceManager blockPlaceManager, CellModelManager cellModelManager)
+        public GameplayModeController(IConfigsService configsService, IPanelService panelService, IIocFactory iocFactory, CellPresenterManager cellPresenterManager, BlockPlaceModelManager blockPlaceModelManager, CellModelManager cellModelManager, BlockPlacePresenterManager blockPlacePresenterManager)
         {
             _configsService = configsService;
             _panelService = panelService;
             _iocFactory = iocFactory;
             _cellPresenterManager = cellPresenterManager;
-            _blockPlaceManager = blockPlaceManager;
+            _blockPlaceModelManager = blockPlaceModelManager;
             _cellModelManager = cellModelManager;
+            _blockPlacePresenterManager = blockPlacePresenterManager;
 
             _levelsDatabase = _configsService.Get<LevelsDatabase>();
 
@@ -66,9 +68,13 @@ namespace BeaverBlocks.Core.Game
 
         private void InitializeBlockPlaces()
         {
-            var blockPlaceInstaller = new BlockPlaceInstaller(_configsService.Get<GameSettings>().CountBottomPlace);
-            blockPlaceInstaller.Initialize();
-            _blockPlaceManager.SetBlockPlaces(blockPlaceInstaller.BlockPlacePresenters);
+            var blockPlaceModelInstaller = new BlockPlaceModelInstaller(_configsService.Get<GameSettings>().GridSize);
+            blockPlaceModelInstaller.Initialize();
+            _blockPlaceModelManager.SetModels(blockPlaceModelInstaller.PlaceModels);
+            
+            var blockPlacePresentorInstaller = new BlockPlacePresentorInstaller(_configsService.Get<GameSettings>().CountBottomPlace);
+            blockPlacePresentorInstaller.Initialize();
+            _blockPlacePresenterManager.SetBlockPlaces(blockPlacePresentorInstaller.BlockPlacePresenters);
         }
 
         private async UniTask StartLevel()

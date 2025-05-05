@@ -10,15 +10,15 @@ namespace BeaverBlocks.UI.Views.Game.BottomView
     {
         private readonly IConfigsService _configsService;
         private readonly PrefabsConfig _prefabsConfig;
-        private readonly BlockPlaceManager _blockPlaceManager;
+        private readonly BlockPlacePresenterManager _blockPlaceModelManager;
 
         public BlockPlaceView PlaceViewPrefab => _prefabsConfig.BlockPlaceView;
-        public IEnumerable<IBlockPlacePresenter> BottomPlacePresenters => _blockPlaceManager.GetBlockPlacePresenters;
+        public IEnumerable<IBlockPlacePresenter> BottomPlacePresenters => _blockPlaceModelManager.GetBlockPlacePresenters;
 
-        public BottomBlocksPresenter(IConfigsService configsService, BlockPlaceManager blockPlaceManager)
+        public BottomBlocksPresenter(IConfigsService configsService, BlockPlacePresenterManager blockPlaceModelManager)
         {
             _configsService = configsService;
-            _blockPlaceManager = blockPlaceManager;
+            _blockPlaceModelManager = blockPlaceModelManager;
 
             _prefabsConfig = _configsService.Get<PrefabsConfig>();
         }

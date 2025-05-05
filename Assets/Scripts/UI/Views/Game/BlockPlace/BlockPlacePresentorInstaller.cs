@@ -3,14 +3,14 @@ using BeaverBlocks.UI.Views.Game.BlockPlace;
 
 namespace BeaverBlocks.Core.Game.BlockPlace
 {
-    public class BlockPlaceInstaller
+    public class BlockPlacePresentorInstaller
     {
         private readonly uint _countOfPlaces;
         private readonly Dictionary<uint, IBlockPlacePresenter> _blockPlacePresenters = new();
 
         public IReadOnlyDictionary<uint, IBlockPlacePresenter> BlockPlacePresenters => _blockPlacePresenters;
 
-        public BlockPlaceInstaller(uint countOfPlaces)
+        public BlockPlacePresentorInstaller(uint countOfPlaces)
         {
             _countOfPlaces = countOfPlaces;
         }

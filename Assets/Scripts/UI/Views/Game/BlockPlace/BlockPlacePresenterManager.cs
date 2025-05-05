@@ -6,7 +6,7 @@ using UnityEngine.Scripting;
 
 namespace BeaverBlocks.Core.Game.BlockPlace
 {
-    public class BlockPlaceManager
+    public class BlockPlacePresenterManager
     {
         private readonly Dictionary<uint, IBlockPlacePresenter> _blockPlacePresenters = new();
 
@@ -14,13 +14,22 @@ namespace BeaverBlocks.Core.Game.BlockPlace
         public IEnumerable<IBlockPlacePresenter> GetBlockPlacePresenters => _blockPlacePresenters.Values;
 
         [Preserve]
-        public BlockPlaceManager()
+        public BlockPlacePresenterManager()
         {
         }
 
         public void SetBlockPlaces(IReadOnlyDictionary<uint, IBlockPlacePresenter> blockPresenters)
         {
             _blockPlacePresenters.AddRange(blockPresenters);
+            foreach (var presenter in _blockPlacePresenters)
+            {
+                presenter.Value.OnBlockPointDown += () => OnClickBlockPlace(presenter.Key);
+            }
+        }
+
+        private void OnClickBlockPlace(uint blockPlaceId)
+        {
+            
         }
     }
 }

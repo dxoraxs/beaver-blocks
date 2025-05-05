@@ -1,5 +1,6 @@
 ﻿using BeaverBlocks.Core.Cells;
 using BeaverBlocks.UI.Views.Game.BottomView;
+using BeaverBlocks.UI.Views.Game.DragLayer;
 using BeaverBlocks.UI.Views.Game.GridCells;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace BeaverBlocks.UI.Views.Game
     {
         [SerializeField] private GridCellsView _gridCellsView;
         [SerializeField] private BottomBlocksView _bottomBlocksView;
+        [SerializeField] private DragBlockView _dragBlockView;
         private IGamePresenter _gamePresenter;
  
         public void Initialize(IGamePresenter gamePresenter)
@@ -17,6 +19,7 @@ namespace BeaverBlocks.UI.Views.Game
 
             _gridCellsView.Initialize(_gamePresenter.GridCellsPresenter);
             _bottomBlocksView.Initialize(_gamePresenter.BottomBlocksPresenter);
+            _dragBlockView.Initialize(_gamePresenter.DragBlockPresenter);
         }
     }
 }

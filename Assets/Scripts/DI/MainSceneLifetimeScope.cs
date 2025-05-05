@@ -24,7 +24,8 @@ namespace BeaverBlocks.DI
             builder.RegisterEntryPoint<InputController>().As<IInputController>();
             builder.Register<CellModelManager>(Lifetime.Singleton).AsSelf();
             builder.Register<CellPresenterManager>(Lifetime.Singleton).AsSelf();
-            builder.Register<BlockPlaceManager>(Lifetime.Singleton).AsSelf();
+            builder.Register<BlockPlaceModelManager>(Lifetime.Singleton).AsSelf();
+            builder.Register<BlockPlacePresenterManager>(Lifetime.Singleton).AsSelf();
             
             builder.RegisterEntryPoint<GameController>(Lifetime.Scoped).AsSelf();
         }

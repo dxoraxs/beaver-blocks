@@ -11,14 +11,14 @@ namespace BeaverBlocks.Core.Game.Level
 {
     public class InitialLevelBlockInstaller
     {
-        private readonly BlockPlaceManager _blockPlaceManager;
+        private readonly BlockPlaceModelManager _blockPlaceModelManager;
         private readonly uint _countBottomPlace;
         private readonly CellColorsConfig _colorsConfig;
 
         [Preserve]
-        public InitialLevelBlockInstaller(BlockPlaceManager blockPlaceManager, IConfigsService configsService)
+        public InitialLevelBlockInstaller(BlockPlaceModelManager blockPlaceModelManager, IConfigsService configsService)
         {
-            _blockPlaceManager = blockPlaceManager;
+            _blockPlaceModelManager = blockPlaceModelManager;
             _countBottomPlace = configsService.Get<GameSettings>().CountBottomPlace;
             _colorsConfig = configsService.Get<CellColorsConfig>();
         }
@@ -29,10 +29,9 @@ namespace BeaverBlocks.Core.Game.Level
 
             for (var index = 0u; index < initialBlocks.Length && index < _countBottomPlace; index++)
             {
-                var currentBlockSprite = initialBlocks[index].Sprite;
-                var randomColor = _colorsConfig.CellColors[Random.Range(0, _colorsConfig.CellColors.Length)].DefaultColors;
-                _blockPlaceManager.BlockPlacePresenters[index].SetSprite(currentBlockSprite);
-                _blockPlaceManager.BlockPlacePresenters[index].SetColor(randomColor);
+                var currentBlock = initialBlocks[index];
+                var randomColor = Random.Range(0, _colorsConfig.CellColors.Length);
+                _blockPlaceModelManager.PlaceModels[index].SetBlock(currentBlock.Id, randomColor);
             }
         }
     }

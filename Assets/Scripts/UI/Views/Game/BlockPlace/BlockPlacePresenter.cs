@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System;
+using UniRx;
 using UnityEngine;
 
 namespace BeaverBlocks.UI.Views.Game.BlockPlace
@@ -7,7 +8,8 @@ namespace BeaverBlocks.UI.Views.Game.BlockPlace
     {
         private readonly ReactiveProperty<Sprite> _sprite = new();
         private readonly ReactiveProperty<Color> _color = new();
-        
+
+        public event Action OnBlockPointDown;
         public IReadOnlyReactiveProperty<Sprite> BlockIconStream => _sprite;
         public IReadOnlyReactiveProperty<Color> BlockColorStream => _color;
 
@@ -18,7 +20,7 @@ namespace BeaverBlocks.UI.Views.Game.BlockPlace
         
         public void OnPointerDown()
         {
-            
+            OnBlockPointDown?.Invoke();
         }
 
         public void SetSprite(Sprite sprite)
