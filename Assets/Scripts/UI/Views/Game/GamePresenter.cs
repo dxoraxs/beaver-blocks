@@ -34,6 +34,8 @@ namespace BeaverBlocks.UI.Views.Game
             _cellPresentersManager = cellPresentersManager;
             _blockPlacePresenterManager = blockPlacePresenterManager;
             _dragBlockController = dragBlockController;
+            
+            _dragBlockController.SetFuncGetCellIndex(GetGridIndexFromScreenPoint);
 
             _gridCellsPresenter = _iocFactory.Create<GridCellPresenter, CellPresentersManager>(_cellPresentersManager);
         }

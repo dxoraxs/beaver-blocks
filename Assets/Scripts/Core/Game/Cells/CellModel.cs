@@ -6,29 +6,33 @@ namespace BeaverBlocks.Core.Cells
     public class CellModel
     {
         private readonly BoolReactiveProperty _isBusy = new();
-        private readonly IntReactiveProperty _cellColorGroup = new();
-        private readonly IntReactiveProperty _previewColorGroup = new();
+        private readonly BoolReactiveProperty _isPreviewEnable = new();
+        private readonly IntReactiveProperty _cellColorGroup = new(-1);
+        private readonly IntReactiveProperty _previewColorGroup = new(-1);
         
         public IReadOnlyReactiveProperty<bool> IsBusyStream => _isBusy;
+        public IReadOnlyReactiveProperty<bool> IsPreviewStream => _isPreviewEnable;
         public IReadOnlyReactiveProperty<int> CellColorStream => _cellColorGroup;
         public IReadOnlyReactiveProperty<int> PreviewColorStream => _previewColorGroup;
 
         public void SetBusy(int colorGroup)
         {
-            _isBusy.Value = true;
             _cellColorGroup.Value = colorGroup;
+            _isBusy.Value = true;
         }
 
         public void SetPreview(int colorGroup)
         {
             _previewColorGroup.Value = colorGroup;
+            _isPreviewEnable.Value = true;
         }
 
         public void ClearCell()
         {
+            _cellColorGroup.Value = -1;
+            _previewColorGroup.Value = -1;
             _isBusy.Value = false;
-            _cellColorGroup.Value = 0;
-            _previewColorGroup.Value = 0;
+            _isPreviewEnable.Value = false;
         }
     }
 }

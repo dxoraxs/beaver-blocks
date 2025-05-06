@@ -15,5 +15,11 @@ namespace BeaverBlocks.Configs.Data
     {
         [field:SerializeField] public Color DefaultColors { get; private set; }
         [field:SerializeField] public Color PreviewColors { get; private set; }
+
+        public static PairColorValue GetEmptyValue => new ()
+        {
+            DefaultColors = Color.clear,
+            PreviewColors = Color.clear
+        };
     }
 }

@@ -45,12 +45,17 @@ namespace BeaverBlocks.Core.Cells
         private void SubscribePresenterToModel(ICellPresenter presenter, CellModel cellModel)
         {
             cellModel.CellColorStream.Subscribe(index => presenter.SetCellColor(GetColor(index).DefaultColors));
-            cellModel.PreviewColorStream.Subscribe(index => presenter.SetCellColor(GetColor(index).PreviewColors));
-            cellModel.IsBusyStream.Subscribe(presenter.SetEnable);
+            cellModel.PreviewColorStream.Subscribe(index => presenter.SetPreviewColor(GetColor(index).PreviewColors));
+            cellModel.IsBusyStream.Subscribe(presenter.SetActive);
+            cellModel.IsPreviewStream.Subscribe(presenter.SetPreviewActive);
         }
-
+        
         private PairColorValue GetColor(int index)
         {
+            if (index < 0 || index >= _cellColorsConfig.CellColors.Length)
+            {
+                return PairColorValue.GetEmptyValue;
+            }
             return _cellColorsConfig.CellColors[index];
         }
     }

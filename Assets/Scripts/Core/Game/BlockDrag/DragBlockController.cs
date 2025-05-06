@@ -12,31 +12,66 @@ using VContainer.Unity;
 
 namespace BeaverBlocks.Core.Game
 {
+    public readonly struct DragBlockStartData
+    {
+        public readonly Vector2 StartPosition;
+        public readonly Sprite Sprite;
+        public readonly PairColorValue Color;
+        public readonly int ColorGroup;
+        public readonly string BlockId;
+
+        public DragBlockStartData(Vector2 startPosition, Sprite sprite, PairColorValue color, string blockId,
+            int colorGroup)
+        {
+            StartPosition = startPosition;
+            Sprite = sprite;
+            Color = color;
+            BlockId = blockId;
+            ColorGroup = colorGroup;
+        }
+    }
+
+    public readonly struct DragBlockUpdateData
+    {
+        public readonly Vector2 Position;
+        public readonly (int x, int y) IndexCell;
+
+        public DragBlockUpdateData(Vector2 position, (int, int) indexCell)
+        {
+            Position = position;
+            IndexCell = indexCell;
+        }
+    }
+
     public class DragBlockController
     {
-        public event Action<Vector2, Sprite, Color> OnStartMove;
-        public event Action<Vector2> OnMove;
+        public event Action<DragBlockStartData> OnStartMove;
+        public event Action<DragBlockUpdateData> OnMove;
         public event Action OnEndMove;
         private readonly IDragController _dragController;
-        private readonly BlockPlacePresenterManager _blockPlacePresenterManager;
-        private readonly IConfigsService _configsService;
 
         private readonly BlocksDatabase _blocksDatabase;
         private readonly CellColorsConfig _cellColorsConfig;
+        private readonly GameSettings _gameSettings;
+
+        private Func<Vector2, (int, int)> _getCellIndex;
 
         [Preserve]
-        public DragBlockController(IDragController dragController,
-            BlockPlacePresenterManager blockPlacePresenterManager,
-            IConfigsService configsService, IInputController inputController)
+        public DragBlockController(IDragController dragController, IConfigsService configsService,
+            IInputController inputController)
         {
             _dragController = dragController;
-            _blockPlacePresenterManager = blockPlacePresenterManager;
-            _configsService = configsService;
 
-            _blocksDatabase = _configsService.Get<BlocksDatabase>();
-            _cellColorsConfig = _configsService.Get<CellColorsConfig>();
+            _blocksDatabase = configsService.Get<BlocksDatabase>();
+            _cellColorsConfig = configsService.Get<CellColorsConfig>();
+            _gameSettings = configsService.Get<GameSettings>();
 
-            _dragController.OnUpdateDrag += position => OnMove?.Invoke(position);
+            _dragController.OnUpdateDrag += OnUpdateDrag;
+        }
+
+        public void SetFuncGetCellIndex(Func<Vector2, (int, int)> getCellIndex)
+        {
+            _getCellIndex = getCellIndex;
         }
 
         public async UniTask StartDrag(Vector2 startPosition, string blockId, int groupIndex,
@@ -44,12 +79,20 @@ namespace BeaverBlocks.Core.Game
         {
             var blockData = _blocksDatabase.BlockConfigs.First(block => block.Id == blockId);
 
-            OnStartMove?.Invoke(startPosition, blockData.Sprite,
-                _cellColorsConfig.CellColors[groupIndex].DefaultColors);
-            
+            var startData = new DragBlockStartData(startPosition, blockData.Sprite,
+                _cellColorsConfig.CellColors[groupIndex], blockId, groupIndex);
+            OnStartMove?.Invoke(startData);
+
             await _dragController.StartMove(cancellationTokenSource);
 
             OnEndMove?.Invoke();
+        }
+
+        private void OnUpdateDrag(Vector2 position)
+        {
+            position.y += _gameSettings.DragVerticalOffset;
+            var dragBlockUpdateData = new DragBlockUpdateData(position, _getCellIndex(position));
+            OnMove?.Invoke(dragBlockUpdateData);
         }
     }
 }

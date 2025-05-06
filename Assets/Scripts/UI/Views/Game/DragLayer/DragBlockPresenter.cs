@@ -40,17 +40,17 @@ namespace BeaverBlocks.UI.Views.Game.DragLayer
             _dragObjectParent = parent;
         }
 
-        private void StartMove(Vector2 startPosition, Sprite blockImage, Color color)
+        private void StartMove(DragBlockStartData data)
         {
             _dragBlockObjectView = SpawnNewView();
-            var presenter = new DragBlockObjectPresenter(color, blockImage);
+            var presenter = new DragBlockObjectPresenter(data.Color.DefaultColors, data.Sprite);
             _dragBlockObjectView.Initialize(presenter);
-            _dragBlockObjectView.transform.position = startPosition;
+            _dragBlockObjectView.transform.position = data.StartPosition;
         }
 
-        private void Move(Vector2 position)
+        private void Move(DragBlockUpdateData dragUpdateData)
         {
-            position.y += _gameSettings.DragVerticalOffset;
+            var position = dragUpdateData.Position;
             _dragBlockObjectView.transform.position = Vector3.Lerp(_dragBlockObjectView.transform.position, position,
                 _gameSettings.SpeedDragBlock * Time.deltaTime);
         }

@@ -29,8 +29,8 @@ namespace BeaverBlocks.Core.Game
         private readonly CellPresentersManager _cellPresentersManager;
         private readonly BlockPlaceModelManager _blockPlaceModelManager;
         private readonly BlockPlacePresenterManager _blockPlacePresenterManager;
-        private readonly DragBlockController _dragBlockController;
         private readonly IDragController _dragController;
+        private DragBlockController _dragBlockController;
         private uint _levelIndex;
         private IGamePresenter _gamePresenter;
 
@@ -47,14 +47,15 @@ namespace BeaverBlocks.Core.Game
 
             _levelsDatabase = _configsService.Get<LevelsDatabase>();
             _gameSettings = _configsService.Get<GameSettings>();
-            
+
             _dragController = _iocFactory.Create<DragController>();
             _cellModelManager = _iocFactory.Create<CellModelManager>();
             _cellPresentersManager = _iocFactory.Create<CellPresentersManager>();
             _blockPlaceModelManager = _iocFactory.Create<BlockPlaceModelManager>();
             _blockPlacePresenterManager = _iocFactory.Create<BlockPlacePresenterManager>();
-            _dragBlockController = _iocFactory.Create<DragBlockController, IDragController, BlockPlacePresenterManager>(
-                _dragController, _blockPlacePresenterManager);
+            _dragBlockController = _iocFactory
+                .Create<DragBlockController, IDragController, BlockPlacePresenterManager>(
+                    _dragController, _blockPlacePresenterManager);
 
             Initialize();
         }
@@ -114,6 +115,9 @@ namespace BeaverBlocks.Core.Game
 
             while (true)
             {
+                var dragBlockPreviewController =
+                    _iocFactory.Create<DragBlockPreviewController, CellModelManager, DragBlockController>(
+                        _cellModelManager, _dragBlockController);
                 var indexPlace = await _blockPlacePresenterManager.PointerDownStream.First().ToUniTask();
 
                 var placeModel = _blockPlaceModelManager.PlaceModels[indexPlace];
@@ -131,25 +135,23 @@ namespace BeaverBlocks.Core.Game
 
                 await _inputController.MouseDownStream.Where(value => !value).First().ToUniTask();
                 cancelTokenSource.Cancel();
+                dragBlockPreviewController.Dispose();
 
                 var verticalOffset = Vector2.up * _gameSettings.DragVerticalOffset;
                 var targetPoint = _inputController.MousePosition + verticalOffset;
                 if (!_gamePresenter.IsGridRaycast(targetPoint))
                 {
-                    Debug.Log("not grid raycast");
-                    _blockPlaceModelManager.SetPlace(indexPlace, blockId, groupColor);
-                    continue;
-                }
-                
-                var nearestCellIndex = _gamePresenter.GetGridIndexFromScreenPoint(targetPoint);
-                if (_cellModelManager.IsCellBusy(nearestCellIndex))
-                {
-                    Debug.Log("cell is busy");
                     _blockPlaceModelManager.SetPlace(indexPlace, blockId, groupColor);
                     continue;
                 }
 
-                Debug.Log($"Set block to cell - {nearestCellIndex}");
+                var nearestCellIndex = _gamePresenter.GetGridIndexFromScreenPoint(targetPoint);
+                if (_cellModelManager.IsCellBusy(nearestCellIndex))
+                {
+                    _blockPlaceModelManager.SetPlace(indexPlace, blockId, groupColor);
+                    continue;
+                }
+
                 _cellModelManager.CellModels[nearestCellIndex].SetPreview(groupColor);
             }
         }

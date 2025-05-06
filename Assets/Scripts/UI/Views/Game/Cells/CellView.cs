@@ -8,6 +8,7 @@ namespace BeaverBlocks.UI.Views.Game.Cells
     public class CellView : MonoBehaviour
     {
         [SerializeField] private Image _cellImage;
+        [SerializeField] private Image _previewImage;
         private ICellPresenter _presenter;
 
         public void Initialize(ICellPresenter presenter)
@@ -16,19 +17,28 @@ namespace BeaverBlocks.UI.Views.Game.Cells
 
             _presenter.CellEnableStream.Subscribe(SetEnableCell).AddTo(this);
             _presenter.CellColorStream.Subscribe(SetColorToCell).AddTo(this);
+            _presenter.PreviewEnableStream.Subscribe(SetPreviewEnableCell).AddTo(this);
+            _presenter.PreviewColorStream.Subscribe(SetPreviewColorToCell).AddTo(this);
         }
 
         private void SetEnableCell(bool value)
         {
-            var newColor = _cellImage.color;
-            newColor.a = value ? 1 : 0;
-            _cellImage.color = newColor;
+            _cellImage.enabled = value;
         }
 
         private void SetColorToCell(Color color)
         {
-            color.a = _cellImage.color.a;
             _cellImage.color = color;
+        }
+
+        private void SetPreviewEnableCell(bool value)
+        {
+            _previewImage.enabled = value;
+        }
+
+        private void SetPreviewColorToCell(Color color)
+        {
+            _previewImage.color = color;
         }
     }
 }
