@@ -53,10 +53,8 @@ namespace BeaverBlocks.Core.Game
             _cellPresentersManager = _iocFactory.Create<CellPresentersManager>();
             _blockPlaceModelManager = _iocFactory.Create<BlockPlaceModelManager>();
             _blockPlacePresenterManager = _iocFactory.Create<BlockPlacePresenterManager>();
-            _dragBlockController = _iocFactory
-                .Create<DragBlockController, IDragController, BlockPlacePresenterManager>(
-                    _dragController, _blockPlacePresenterManager);
-
+            _dragBlockController = _iocFactory.Create<DragBlockController, IDragController>(_dragController);
+            
             Initialize();
         }
 
@@ -120,39 +118,71 @@ namespace BeaverBlocks.Core.Game
                         _cellModelManager, _dragBlockController);
                 var indexPlace = await _blockPlacePresenterManager.PointerDownStream.First().ToUniTask();
 
+
                 var placeModel = _blockPlaceModelManager.PlaceModels[indexPlace];
                 var blockId = placeModel.BlockId.Value;
                 if (string.IsNullOrEmpty(blockId))
                 {
                     continue;
                 }
-
+                
+                var blockConfig = _configsService.Get<BlocksDatabase>().BlockConfigs.First(block => block.Id == blockId);
                 var groupColor = placeModel.GroupColor.Value;
                 _blockPlaceModelManager.ClearPlace(indexPlace);
                 var cancelTokenSource = new CancellationTokenSource();
                 _dragBlockController.StartDrag(_inputController.MousePosition, blockId,
                     groupColor, cancelTokenSource).Forget();
 
+                DragBlockResultData? dragResult = null;
+                _dragBlockController.OnEndMove += OnDragEnd;
+                
+                
                 await _inputController.MouseDownStream.Where(value => !value).First().ToUniTask();
                 cancelTokenSource.Cancel();
                 dragBlockPreviewController.Dispose();
 
-                var verticalOffset = Vector2.up * _gameSettings.DragVerticalOffset;
-                var targetPoint = _inputController.MousePosition + verticalOffset;
-                if (!_gamePresenter.IsGridRaycast(targetPoint))
+                await UniTask.WaitUntil(() => dragResult.HasValue);
+                
+                await OnMouseRelease(dragResult.Value, blockConfig, indexPlace, groupColor);
+                void OnDragEnd(DragBlockResultData resultData)
                 {
-                    _blockPlaceModelManager.SetPlace(indexPlace, blockId, groupColor);
-                    continue;
+                    dragResult = resultData;
                 }
+            }
 
-                var nearestCellIndex = _gamePresenter.GetGridIndexFromScreenPoint(targetPoint);
-                if (_cellModelManager.IsCellBusy(nearestCellIndex))
-                {
-                    _blockPlaceModelManager.SetPlace(indexPlace, blockId, groupColor);
-                    continue;
-                }
+        }
+        
+        private async UniTask OnMouseRelease(DragBlockResultData resultData, BlockConfig blockConfig, uint indexPlace, int groupColor)
+        {
+            var newList = new (int, int)[blockConfig.Shape.Length];
+            for (var i = 0; i < blockConfig.Shape.Length; i++)
+            {
+                newList[i] = (
+                    resultData.IndexCell.x + blockConfig.Shape[i].x,
+                    resultData.IndexCell.y + blockConfig.Shape[i].y
+                );
+            }
 
-                _cellModelManager.CellModels[nearestCellIndex].SetPreview(groupColor);
+            if (!_cellModelManager.TryGetCellsEmpty(newList, out var cells))
+            {
+                _blockPlaceModelManager.SetPlace(indexPlace, blockConfig.Id, groupColor);
+                return;
+            }
+            
+            var cellModels = cells.ToArray();
+            foreach (var model in cellModels)
+            {
+                model.SetBusy(groupColor);
+            }
+
+            await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+
+            var clearCells = _cellModelManager.TryGetAllCellsFromRowAndColumn(newList).ToArray();
+            var delayTime = .5f / clearCells.Length;
+            foreach (var cellModel in clearCells)
+            {
+                cellModel.ClearCell();
+                await UniTask.Delay(TimeSpan.FromSeconds(delayTime));
             }
         }
 

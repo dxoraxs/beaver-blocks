@@ -55,7 +55,7 @@ namespace BeaverBlocks.UI.Views.Game.DragLayer
                 _gameSettings.SpeedDragBlock * Time.deltaTime);
         }
 
-        private void EndMove()
+        private void EndMove(DragBlockResultData data)
         {
             Object.Destroy(_dragBlockObjectView.gameObject);
         }

@@ -18,9 +18,11 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
         private readonly PrefabsConfig _prefabsConfig;
         private readonly CellPresentersManager _cellPresentersManager;
         private RectTransform _gridRectTransform;
+        private float _cellSize;
 
         public CellView GetCellViewPrefab => _prefabsConfig.CellView;
         public uint SizeGrid => _gameSettings.GridSize;
+        public float SizeCell() => _cellSize;
         public IEnumerable<ICellPresenter> GetCellPresenters => _cellPresentersManager.GetCellPresenters;
 
         [Preserve]
@@ -36,6 +38,11 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
         public void SetRectTransform(RectTransform rectTransform)
         {
             _gridRectTransform = rectTransform;
+        }
+
+        public void SetCellSize(float cellSize)
+        {
+            _cellSize = cellSize;
         }
 
         public bool IsPointInsideUIElement(Vector2 screenPoint)
@@ -58,11 +65,11 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
             var cellWidth = rect.width / SizeGrid;
             var cellHeight = rect.height / SizeGrid;
 
-            var xIndex = Mathf.FloorToInt(xFromLeft / cellWidth);
-            var yIndex = Mathf.FloorToInt(yFromBottom / cellHeight);
+            var xIndex = Mathf.RoundToInt(xFromLeft / cellWidth);
+            var yIndex = Mathf.RoundToInt(yFromBottom / cellHeight);
 
-            xIndex = Mathf.RoundToInt(Mathf.Clamp(xIndex, -1, SizeGrid));
-            yIndex = (int)SizeGrid - 1 - Mathf.RoundToInt(Mathf.Clamp(yIndex, -1, SizeGrid));
+            xIndex = (int)Mathf.Clamp(xIndex, -1, SizeGrid);
+            yIndex = (int)SizeGrid - 1 - (int)Mathf.Clamp(yIndex, -1, SizeGrid);
 
             return (xIndex, yIndex);
         }

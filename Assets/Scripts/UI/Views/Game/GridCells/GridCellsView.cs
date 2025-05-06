@@ -18,9 +18,11 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
         {
             _presenter = presenter;
 
-            _presenter.SetRectTransform(RectTransform);
             SetGridSize();
             CreateCellViews();
+            
+            _presenter.SetRectTransform(RectTransform);
+            _presenter.SetCellSize(_gridLayoutGroup.cellSize.x + _gridLayoutGroup.spacing.x);
         }
 
         private void SetGridSize()

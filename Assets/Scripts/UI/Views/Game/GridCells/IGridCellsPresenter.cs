@@ -9,8 +9,10 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
     {
         CellView GetCellViewPrefab { get; }
         uint SizeGrid { get; }
+        float SizeCell();
         IEnumerable<ICellPresenter> GetCellPresenters { get; }
         void SetRectTransform(RectTransform rectTransform);
+        void SetCellSize(float cellSize);
         bool IsPointInsideUIElement(Vector2 screenPoint);
         (int x, int y) GetGridIndexFromScreenPoint(Vector2 point); 
     }

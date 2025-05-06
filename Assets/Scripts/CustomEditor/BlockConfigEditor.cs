@@ -61,6 +61,9 @@ public class BlockConfigEditor : Editor
             }
         }
 
+        var offsetToDownGrid = Vector2.down * (_gridSize * (_cellSize + _padding));
+        DrawCenterCross(gridRect.position - offsetToDownGrid, _cellSize, _padding, _config.CenterOffset);
+
         GUILayout.Space(10);
 
         if (GUILayout.Button("Reload from config"))
@@ -74,6 +77,25 @@ public class BlockConfigEditor : Editor
             _config.SetShape(new List<Vector2Int>(_selectedCells).ToArray());
             EditorUtility.SetDirty(_config);
         }
+    }
+
+    private void DrawCenterCross(Vector2 gridOrigin, float cellSize, float padding, Vector2 centerOffset)
+    {
+        Handles.color = Color.red;
+
+        var cellFullSize = new Vector2(cellSize + padding, cellSize + padding);
+        var scaleOffset = Vector2.Scale(centerOffset, cellFullSize);
+        scaleOffset.y *= -1;
+        var centerPos = gridOrigin + scaleOffset;
+
+        var half = cellSize * 0.4f;
+        var horStart = centerPos + new Vector2(-half, 0);
+        var horEnd = centerPos + new Vector2(+half, 0);
+        var vertStart = centerPos + new Vector2(0, -half);
+        var vertEnd = centerPos + new Vector2(0, +half);
+
+        Handles.DrawLine(horStart, horEnd);
+        Handles.DrawLine(vertStart, vertEnd);
     }
 
     private void TryLoadGridSizeFromGameSettings()
@@ -90,7 +112,7 @@ public class BlockConfigEditor : Editor
             _gridSize = settings.GridSize;
         }
     }
-    
+
     private void LoadConfig()
     {
         _selectedCells.Clear();
