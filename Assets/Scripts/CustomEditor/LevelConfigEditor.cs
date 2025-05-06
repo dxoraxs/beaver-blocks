@@ -6,6 +6,7 @@ using System.IO;
 using BeaverBlocks.Configs.Data;
 using Random = UnityEngine.Random;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(LevelConfig))]
 public class LevelConfigEditor : Editor
 {
@@ -129,3 +130,4 @@ public class LevelConfigEditor : Editor
         return Color.HSVToRGB((groupIndex * 0.123f) % 1f, 0.6f, 1f);
     }
 }
+#endif

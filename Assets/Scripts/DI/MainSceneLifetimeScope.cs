@@ -19,6 +19,7 @@ namespace BeaverBlocks.DI
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<VContainerFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ScoreManager>(Lifetime.Singleton).As<IScoreManager>();
             builder.RegisterInstance(_configsService).As<IConfigsService>();
             builder.RegisterInstance(_panelService).As<IPanelService>();
             builder.RegisterEntryPoint<InputController>().As<IInputController>();

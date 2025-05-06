@@ -17,6 +17,7 @@ namespace BeaverBlocks.Core.Game
         private readonly DragBlockController _dragBlockController;
         private readonly BlocksDatabase _blocksDatabase;
         private readonly List<(int, int)> _usedCellIndexes = new();
+        private readonly List<(int, int)> _overrideCellIndexes = new();
         private BlockConfig _blockConfig;
         private int _blockColor;
 
@@ -46,30 +47,28 @@ namespace BeaverBlocks.Core.Game
             _usedCellIndexes.Clear();
         }
 
+
         private void OnMove(DragBlockUpdateData updateData)
         {
-            var newList = new (int, int)[_blockConfig.Shape.Length];
-            for (var i = 0; i < _blockConfig.Shape.Length; i++)
-            {
-                newList[i] = (
-                    updateData.IndexCell.x + _blockConfig.Shape[i].x,
-                    updateData.IndexCell.y + _blockConfig.Shape[i].y
-                    );
-            }
-            
-            if (!_cellModelManager.TryGetCellsEmpty(newList, out var cells))
-            {
-                ClearUsedCells();
-                return;
-            }
-            
+            var newList = updateData.IndexCell;
+
+            var overrideCells = _cellModelManager.GetAllCellsFromRowAndColumn(newList).ToArray();
+
             ClearUnusedCells(newList);
+            ClearOverrideCells(overrideCells);
 
             _usedCellIndexes.Clear();
-            _usedCellIndexes.AddRange(newList);
+            _overrideCellIndexes.Clear();
 
-            var cellModels = cells.ToArray();
-            foreach (var modelKey in cellModels)
+            _usedCellIndexes.AddRange(newList);
+            _overrideCellIndexes.AddRange(overrideCells);
+
+            foreach (var overrideCellIndex in _overrideCellIndexes)
+            {
+                _cellModelManager.SetOverride(overrideCellIndex, _blockColor);
+            }
+
+            foreach (var modelKey in _usedCellIndexes)
             {
                 _cellModelManager.SetPreview(modelKey, _blockColor);
             }
@@ -82,22 +81,36 @@ namespace BeaverBlocks.Core.Game
             {
                 if (!newSet.Contains(oldIndex))
                 {
-                    if (_cellModelManager.CellModels.TryGetValue(oldIndex, out var oldCell))
-                    {
-                        oldCell.ClearCell();
-                    }
+                    _cellModelManager.ClearPreview(oldIndex);
+                }
+            }
+        }
+
+        private void ClearOverrideCells((int, int)[] newList)
+        {
+            var newSet = new HashSet<(int, int)>(newList);
+            foreach (var oldIndex in _overrideCellIndexes)
+            {
+                if (!newSet.Contains(oldIndex))
+                {
+                    _cellModelManager.SetOverride(oldIndex, -1);
                 }
             }
         }
 
         private void ClearUsedCells()
         {
-            foreach (var usedCellIndex in _usedCellIndexes)
+            foreach (var oldIndex in _overrideCellIndexes)
             {
-                var cellModel = _cellModelManager.CellModels[usedCellIndex];
-                cellModel.ClearCell();
+                _cellModelManager.SetOverride(oldIndex, -1);
             }
 
+            foreach (var usedCellIndex in _usedCellIndexes)
+            {
+                _cellModelManager.ClearPreview(usedCellIndex);
+            }
+
+            _overrideCellIndexes.Clear();
             _usedCellIndexes.Clear();
         }
 

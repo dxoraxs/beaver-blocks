@@ -5,6 +5,7 @@ using System.IO;
 using BeaverBlocks.Configs.Data;
 using Unity.VisualScripting;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(BlockConfig))]
 public class BlockConfigEditor : Editor
 {
@@ -119,3 +120,4 @@ public class BlockConfigEditor : Editor
         _selectedCells.AddRange(_config.Shape);
     }
 }
+#endif

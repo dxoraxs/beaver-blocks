@@ -20,13 +20,14 @@ namespace BeaverBlocks.Core.Cells
         {
         }
         
-        public IEnumerable<(int,int)> TryGetAllCellsFromRowAndColumn(IEnumerable<(int x, int y)> newCellIndexes)
+        public IEnumerable<(int,int)> GetAllCellsFromRowAndColumn(IEnumerable<(int x, int y)> newCellIndexes)
         {
             var foundRows = new HashSet<int>();
             var foundColumns = new HashSet<int>();
             var result = new HashSet<(int,int)>();
 
-            foreach (var (x, y) in newCellIndexes)
+            var cellIndexes = newCellIndexes.ToList();
+            foreach (var (x, y) in cellIndexes)
             {
                 if (foundRows.Add(y) && IsRowFull(y))
                 {
@@ -45,7 +46,7 @@ namespace BeaverBlocks.Core.Cells
             {
                 for (var x = 0; _cellModels.ContainsKey((x, y)); x++)
                 {
-                    if (!IsCellBusy((x, y)))
+                    if (!IsCellBusy((x, y)) && !cellIndexes.Contains((x,y)))
                         return false;
                 }
                 return true;
@@ -55,7 +56,7 @@ namespace BeaverBlocks.Core.Cells
             {
                 for (var y = 0; _cellModels.ContainsKey((x, y)); y++)
                 {
-                    if (!IsCellBusy((x, y)))
+                    if (!IsCellBusy((x, y)) && !cellIndexes.Contains((x,y)))
                         return false;
                 }
                 return true;
@@ -78,21 +79,15 @@ namespace BeaverBlocks.Core.Cells
             }
         }
         
-        public bool TryGetCellsEmpty(IEnumerable<(int x, int y)> cellIndex, out IEnumerable<(int, int)> cells)
+        public bool TryGetCellsEmpty(IEnumerable<(int x, int y)> cellIndex)
         {
             var offsetIndices = cellIndex.ToArray();
-            var cellModels = new List<(int,int)>(offsetIndices.Length);
-            cells = Array.Empty<(int,int)>();
 
             foreach (var offsetIndex in offsetIndices)
             {
                 if (!CellModels.ContainsKey(offsetIndex) || IsCellBusy(offsetIndex))
                     return false;
-
-                cellModels.Add(offsetIndex);
             }
-
-            cells = cellModels;
             return true;
         }
 
@@ -101,6 +96,11 @@ namespace BeaverBlocks.Core.Cells
             if (_cellModels[key].IsBusyStream.Value) return;
 
             CellBusyCounter++;
+            SetColor(key,colorGroup);
+        }
+        
+        public void SetColor((int, int) key, int colorGroup)
+        {
             _cellModels[key].SetBusy(colorGroup);
         }
 
@@ -109,12 +109,24 @@ namespace BeaverBlocks.Core.Cells
             _cellModels[key].SetPreview(colorGroup);
         }
 
+        public void ClearPreview((int, int) key)
+        {
+            _cellModels[key].ClearCell();
+        }
+
+        public void SetOverride((int, int) key, int colorGroup)
+        {
+            _cellModels[key].SetOverrideColor(colorGroup);
+        }
+
         public void ClearAll()
         {
             foreach (var cellModel in _cellModels.Values)
             {
                 cellModel.ClearCell();
             }
+
+            CellBusyCounter = 0;
         }
 
         public void ClearCell((int, int) key)

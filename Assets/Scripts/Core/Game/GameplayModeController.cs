@@ -22,6 +22,7 @@ namespace BeaverBlocks.Core.Game
         private readonly IConfigsService _configsService;
         private readonly IPanelService _panelService;
         private readonly IInputController _inputController;
+        private readonly IScoreManager _scoreManager;
 
         private readonly LevelsDatabase _levelsDatabase;
         private readonly GameSettings _gameSettings;
@@ -38,10 +39,11 @@ namespace BeaverBlocks.Core.Game
 
         [Preserve]
         public GameplayModeController(IConfigsService configsService, IPanelService panelService,
-            IIocFactory iocFactory, IInputController inputController)
+            IIocFactory iocFactory, IInputController inputController, IScoreManager scoreManager)
         {
             _iocFactory = iocFactory;
             _inputController = inputController;
+            _scoreManager = scoreManager;
             _configsService = configsService;
             _panelService = panelService;
 
@@ -53,7 +55,9 @@ namespace BeaverBlocks.Core.Game
             _cellPresentersManager = _iocFactory.Create<CellPresentersManager>();
             _blockPlaceModelManager = _iocFactory.Create<BlockPlaceModelManager>();
             _blockPlacePresenterManager = _iocFactory.Create<BlockPlacePresenterManager>();
-            _dragBlockController = _iocFactory.Create<DragBlockController, IDragController>(_dragController);
+            _dragBlockController =
+                _iocFactory.Create<DragBlockController, IDragController, CellModelManager>(_dragController,
+                    _cellModelManager);
 
             Initialize();
         }
@@ -103,7 +107,7 @@ namespace BeaverBlocks.Core.Game
             var currentLevel = GetLevel();
 
             var countOfUsedBlock = currentLevel.CountMaxBlock;
-            
+
             var cellLevelInstaller = _iocFactory.Create<CellLevelInstaller, CellModelManager>(_cellModelManager);
             cellLevelInstaller.Install(currentLevel);
 
@@ -113,13 +117,12 @@ namespace BeaverBlocks.Core.Game
                 _iocFactory.Create<InitialLevelBlockInstaller, BlockPlaceModelManager>(_blockPlaceModelManager);
             initialLevelBlockPlaceInstaller.Install(currentLevel);
 
-            while (_cellModelManager.CellBusyCounter > 0 && countOfUsedBlock > 0)
+            do
             {
                 var dragBlockPreviewController =
                     _iocFactory.Create<DragBlockPreviewController, CellModelManager, DragBlockController>(
                         _cellModelManager, _dragBlockController);
                 var indexPlace = await _blockPlacePresenterManager.PointerDownStream.First().ToUniTask();
-                countOfUsedBlock--;
 
                 var placeModel = _blockPlaceModelManager.PlaceModels[indexPlace];
                 var blockId = placeModel.BlockId.Value;
@@ -144,18 +147,23 @@ namespace BeaverBlocks.Core.Game
                 dragBlockPreviewController.Dispose();
 
                 await UniTask.WaitUntil(() => dragResult.HasValue);
-
-                await OnMouseRelease(dragResult.Value, blockConfig, indexPlace, groupColor);
+                var setBlockResult = await OnMouseRelease(dragResult.Value, blockConfig, indexPlace, groupColor);
+                if (setBlockResult)
+                {
+                    countOfUsedBlock--;
+                }
 
                 void OnDragEnd(DragBlockResultData resultData)
                 {
                     dragResult = resultData;
                 }
+            } while (_cellModelManager.CellBusyCounter > 0 && countOfUsedBlock > 0);
+
+            if (_cellModelManager.CellBusyCounter == 0)
+            {
+                _levelIndex++;
             }
 
-            if (countOfUsedBlock > 0)
-                _levelIndex++;
-            
             _cellModelManager.ClearAll();
             _blockPlaceModelManager.ClearAll();
 
@@ -164,39 +172,41 @@ namespace BeaverBlocks.Core.Game
             StartLevel().Forget();
         }
 
-        private async UniTask OnMouseRelease(DragBlockResultData resultData, BlockConfig blockConfig, uint indexPlace,
+        private async UniTask<bool> OnMouseRelease(DragBlockResultData resultData, BlockConfig blockConfig,
+            uint indexPlace,
             int groupColor)
         {
-            var newList = new (int, int)[blockConfig.Shape.Length];
-            for (var i = 0; i < blockConfig.Shape.Length; i++)
-            {
-                newList[i] = (
-                    resultData.IndexCell.x + blockConfig.Shape[i].x,
-                    resultData.IndexCell.y + blockConfig.Shape[i].y
-                );
-            }
+            var newList = resultData.IndexCell;
 
-            if (!_cellModelManager.TryGetCellsEmpty(newList, out var cells))
+            if (!_cellModelManager.TryGetCellsEmpty(newList))
             {
                 _blockPlaceModelManager.SetPlace(indexPlace, blockConfig.Id, groupColor);
-                return;
+
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+                return false;
             }
 
-            var cellModels = cells.ToArray();
-            foreach (var cellKey in cellModels)
+            foreach (var cellKey in newList)
             {
                 _cellModelManager.SetBusy(cellKey, groupColor);
             }
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+            var clearCells = _cellModelManager.GetAllCellsFromRowAndColumn(newList).ToArray();
+            foreach (var clearCell in clearCells)
+            {
+                _cellModelManager.SetColor(clearCell, groupColor);
+            }
 
-            var clearCells = _cellModelManager.TryGetAllCellsFromRowAndColumn(newList).ToArray();
+            await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
             var delayTime = .5f / clearCells.Length;
+            _scoreManager.AddBlockScore(clearCells.Length);
             foreach (var cellKey in clearCells)
             {
                 _cellModelManager.ClearCell(cellKey);
                 await UniTask.Delay(TimeSpan.FromSeconds(delayTime));
             }
+
+            return true;
         }
 
         private LevelConfig GetLevel()

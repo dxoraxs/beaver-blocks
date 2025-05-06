@@ -52,24 +52,22 @@ namespace BeaverBlocks.UI.Views.Game.GridCells
 
         public (int x, int y) GetGridIndexFromScreenPoint(Vector2 point)
         {
-            if (!IsPointInsideUIElement(point) ||
-                !RectTransformUtility.ScreenPointToLocalPointInRectangle(_gridRectTransform, point, null,
-                    out var localPoint))
-                return (-1, -1);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_gridRectTransform, point, null,
+                out var localPoint);
 
             var rect = _gridRectTransform.rect;
-
+            
             var xFromLeft = localPoint.x + rect.width / 2f;
+            Debug.Log($"xFromLeft: {xFromLeft}, {xFromLeft / rect.width}");
             var yFromBottom = localPoint.y + rect.height / 2f;
 
             var cellWidth = rect.width / SizeGrid;
-            var cellHeight = rect.height / SizeGrid;
 
             var xIndex = Mathf.RoundToInt(xFromLeft / cellWidth);
-            var yIndex = Mathf.RoundToInt(yFromBottom / cellHeight);
+            var yIndex = Mathf.RoundToInt(yFromBottom / cellWidth);
 
-            xIndex = (int)Mathf.Clamp(xIndex, -1, SizeGrid);
-            yIndex = (int)SizeGrid - 1 - (int)Mathf.Clamp(yIndex, -1, SizeGrid);
+            //xIndex = (int)Mathf.Clamp(xIndex, -1, SizeGrid);
+            yIndex = (int)SizeGrid - 1 - yIndex;
 
             return (xIndex, yIndex);
         }

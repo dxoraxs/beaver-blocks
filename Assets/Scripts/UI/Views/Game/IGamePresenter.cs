@@ -1,6 +1,7 @@
 ﻿using BeaverBlocks.UI.Views.Game.BottomView;
 using BeaverBlocks.UI.Views.Game.DragLayer;
 using BeaverBlocks.UI.Views.Game.GridCells;
+using BeaverBlocks.UI.Views.Game.ScoreCounter;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -13,5 +14,6 @@ namespace BeaverBlocks.UI.Views.Game
         IGridCellsPresenter GridCellsPresenter { get; }
         IBottomBlocksPresenter BottomBlocksPresenter { get; }
         IDragBlockPresenter DragBlockPresenter { get; }
+        IScoreCounterPresenter ScoreCounterPresenter { get; }
     }
 }

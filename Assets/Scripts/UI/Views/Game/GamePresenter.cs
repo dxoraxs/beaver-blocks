@@ -6,6 +6,7 @@ using BeaverBlocks.DI.Factories;
 using BeaverBlocks.UI.Views.Game.BottomView;
 using BeaverBlocks.UI.Views.Game.DragLayer;
 using BeaverBlocks.UI.Views.Game.GridCells;
+using BeaverBlocks.UI.Views.Game.ScoreCounter;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -25,6 +26,7 @@ namespace BeaverBlocks.UI.Views.Game
             _iocFactory.Create<BottomBlocksPresenter, BlockPlacePresenterManager>(_blockPlacePresenterManager);
 
         public IDragBlockPresenter DragBlockPresenter => _iocFactory.Create<DragBlockPresenter, DragBlockController>(_dragBlockController);
+        public IScoreCounterPresenter ScoreCounterPresenter => _iocFactory.Create<ScoreCounterPresenter>();
 
         [Preserve]
         protected GamePresenter(IPanelService panelService, IIocFactory iocFactory,
