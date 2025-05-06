@@ -117,7 +117,10 @@ public class LevelConfigEditor : Editor
         var settingsPath = AssetDatabase.GUIDToAssetPath(guids[0]);
         var settings = AssetDatabase.LoadAssetAtPath<GameSettings>(settingsPath);
         if (settings != null)
+        {
             gridSize = settings.GridSize;
+            config.SetInitialBlocks(settings.CountBottomPlace);
+        }
     }
 
     private Color GetColorForGroup(int groupIndex)

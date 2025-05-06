@@ -69,9 +69,9 @@ namespace BeaverBlocks.Core.Game
             _usedCellIndexes.AddRange(newList);
 
             var cellModels = cells.ToArray();
-            foreach (var model in cellModels)
+            foreach (var modelKey in cellModels)
             {
-                model.SetPreview(_blockColor);
+                _cellModelManager.SetPreview(modelKey, _blockColor);
             }
         }
 

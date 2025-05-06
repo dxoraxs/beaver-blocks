@@ -23,7 +23,7 @@ namespace BeaverBlocks.Core.Game.Level
             foreach (var prePlacedCell in preLoadCells)
             {
                 var cellKey = (prePlacedCell.Position.x,prePlacedCell.Position.y);
-                _cellModelManager.CellModels[cellKey].SetBusy(prePlacedCell.GroupIndex);
+                _cellModelManager.SetBusy(cellKey,prePlacedCell.GroupIndex);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BeaverBlocks.Configs.Data
@@ -8,12 +9,25 @@ namespace BeaverBlocks.Configs.Data
     public class LevelConfig : ScriptableObject
     {
         [field: SerializeField] public string Id { get; private set; }
+        [field: SerializeField] public uint CountMaxBlock { get; private set; }
         [field: SerializeField] public BlockConfig[] InitialBlocks { get; private set; }
         [field: SerializeField] public PrePlacedCell[] PrePlacedCells { get; private set; }
         
         public void SetCells(PrePlacedCell[] cells)
         {
             PrePlacedCells = cells;
+        }
+
+        public void SetInitialBlocks(uint newLength)
+        {
+            if (InitialBlocks.Length == newLength)
+            {
+                return;
+            }
+
+            var result = new BlockConfig[newLength];
+            Array.Copy(InitialBlocks, result, Math.Min(InitialBlocks.Length, newLength));
+            InitialBlocks = result;
         }
     }
 

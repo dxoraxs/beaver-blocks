@@ -30,6 +30,11 @@ namespace BeaverBlocks.Core.Game.Level
             for (var index = 0u; index < initialBlocks.Length && index < _countBottomPlace; index++)
             {
                 var currentBlock = initialBlocks[index];
+                if (currentBlock == null)
+                {
+                    continue;
+                }
+                
                 var randomColor = Random.Range(0, _colorsConfig.CellColors.Length);
                 _blockPlaceModelManager.PlaceModels[index].SetBlock(currentBlock.Id, randomColor);
             }

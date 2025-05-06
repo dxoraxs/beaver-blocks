@@ -54,7 +54,7 @@ namespace BeaverBlocks.Core.Game
             _blockPlaceModelManager = _iocFactory.Create<BlockPlaceModelManager>();
             _blockPlacePresenterManager = _iocFactory.Create<BlockPlacePresenterManager>();
             _dragBlockController = _iocFactory.Create<DragBlockController, IDragController>(_dragController);
-            
+
             Initialize();
         }
 
@@ -102,6 +102,8 @@ namespace BeaverBlocks.Core.Game
         {
             var currentLevel = GetLevel();
 
+            var countOfUsedBlock = currentLevel.CountMaxBlock;
+            
             var cellLevelInstaller = _iocFactory.Create<CellLevelInstaller, CellModelManager>(_cellModelManager);
             cellLevelInstaller.Install(currentLevel);
 
@@ -111,13 +113,13 @@ namespace BeaverBlocks.Core.Game
                 _iocFactory.Create<InitialLevelBlockInstaller, BlockPlaceModelManager>(_blockPlaceModelManager);
             initialLevelBlockPlaceInstaller.Install(currentLevel);
 
-            while (true)
+            while (_cellModelManager.CellBusyCounter > 0 && countOfUsedBlock > 0)
             {
                 var dragBlockPreviewController =
                     _iocFactory.Create<DragBlockPreviewController, CellModelManager, DragBlockController>(
                         _cellModelManager, _dragBlockController);
                 var indexPlace = await _blockPlacePresenterManager.PointerDownStream.First().ToUniTask();
-
+                countOfUsedBlock--;
 
                 var placeModel = _blockPlaceModelManager.PlaceModels[indexPlace];
                 var blockId = placeModel.BlockId.Value;
@@ -125,8 +127,9 @@ namespace BeaverBlocks.Core.Game
                 {
                     continue;
                 }
-                
-                var blockConfig = _configsService.Get<BlocksDatabase>().BlockConfigs.First(block => block.Id == blockId);
+
+                var blockConfig = _configsService.Get<BlocksDatabase>().BlockConfigs
+                    .First(block => block.Id == blockId);
                 var groupColor = placeModel.GroupColor.Value;
                 _blockPlaceModelManager.ClearPlace(indexPlace);
                 var cancelTokenSource = new CancellationTokenSource();
@@ -135,24 +138,34 @@ namespace BeaverBlocks.Core.Game
 
                 DragBlockResultData? dragResult = null;
                 _dragBlockController.OnEndMove += OnDragEnd;
-                
-                
+
                 await _inputController.MouseDownStream.Where(value => !value).First().ToUniTask();
                 cancelTokenSource.Cancel();
                 dragBlockPreviewController.Dispose();
 
                 await UniTask.WaitUntil(() => dragResult.HasValue);
-                
+
                 await OnMouseRelease(dragResult.Value, blockConfig, indexPlace, groupColor);
+
                 void OnDragEnd(DragBlockResultData resultData)
                 {
                     dragResult = resultData;
                 }
             }
 
+            if (countOfUsedBlock > 0)
+                _levelIndex++;
+            
+            _cellModelManager.ClearAll();
+            _blockPlaceModelManager.ClearAll();
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+
+            StartLevel().Forget();
         }
-        
-        private async UniTask OnMouseRelease(DragBlockResultData resultData, BlockConfig blockConfig, uint indexPlace, int groupColor)
+
+        private async UniTask OnMouseRelease(DragBlockResultData resultData, BlockConfig blockConfig, uint indexPlace,
+            int groupColor)
         {
             var newList = new (int, int)[blockConfig.Shape.Length];
             for (var i = 0; i < blockConfig.Shape.Length; i++)
@@ -168,20 +181,20 @@ namespace BeaverBlocks.Core.Game
                 _blockPlaceModelManager.SetPlace(indexPlace, blockConfig.Id, groupColor);
                 return;
             }
-            
+
             var cellModels = cells.ToArray();
-            foreach (var model in cellModels)
+            foreach (var cellKey in cellModels)
             {
-                model.SetBusy(groupColor);
+                _cellModelManager.SetBusy(cellKey, groupColor);
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
 
             var clearCells = _cellModelManager.TryGetAllCellsFromRowAndColumn(newList).ToArray();
             var delayTime = .5f / clearCells.Length;
-            foreach (var cellModel in clearCells)
+            foreach (var cellKey in clearCells)
             {
-                cellModel.ClearCell();
+                _cellModelManager.ClearCell(cellKey);
                 await UniTask.Delay(TimeSpan.FromSeconds(delayTime));
             }
         }
